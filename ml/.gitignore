@@ -13,7 +13,7 @@ env/
 
 # Dataset and large files
 data/
-*.csv
+#*.csv
 *.json
 *.tsv
 *.parquet

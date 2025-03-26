@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from PIL import Image
 import google.generativeai as genai
-from googletrans import Translator
+#from googletrans import Translator
 
 # Configure Gemini AI API
 genai.configure(api_key="AIzaSyAJiWbzaJJFQGwZAANH4uDKKIAsedDDqVI")  # Replace with your actual API Key
