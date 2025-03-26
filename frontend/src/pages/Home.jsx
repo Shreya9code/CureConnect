@@ -28,7 +28,7 @@ const Home = () => {
           </a>
 
           <div
-            onClick={() => window.open("http://localhost:8501", "_blank")}
+            onClick={() => window.open("https://prescription-analysis-mizb3ivqzwznmadiyu8xh7.streamlit.app/", "_blank")}
             className="px-4 py-2 bg-green-500 text-white font-medium rounded-lg shadow hover:bg-green-600 transition"
           >
             Open Prescription Reader

@@ -21,7 +21,7 @@ data/
 *.hdf5
 *.db
 *.sqlite
-*.pkl
+#*.pkl
 *.joblib
 
 # Machine learning model files
