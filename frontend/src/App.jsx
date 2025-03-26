@@ -17,6 +17,7 @@ import WellnessProgram from "./pages/WellnessProgram";
 //import ChatSupport from "./pages/ChatSupport";
 import MedicineReminder from "./pages/MedicineReminder";
 import MentalHealth from "./pages/MentalHealth";
+import DoctorDashboard from "./pages/DoctorDashboard";
 const App = () => {
 
   return (
@@ -37,6 +38,8 @@ const App = () => {
         <Route path="/wellness" element={<WellnessProgram />} />
         <Route path="/reminder" element={<MedicineReminder />} />
         <Route path="/mental-health" element={<MentalHealth />} />
+        <Route path="/doctor" element={<DoctorDashboard />} />
+
       </Routes>
       <Footer />
     </div>
