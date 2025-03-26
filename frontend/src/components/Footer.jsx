@@ -31,15 +31,15 @@ const Footer = () => {
         <div>
           <p className="text-xl font-medium mb-5">Get in touch</p>
           <ul className="flex flex-col gap-2 text-gray-600">
-            <li>+91 9846366184</li>
-            <li>swasthyasahayak@gmail.com</li>
+            <li>+91 8240781544</li>
+            <li>cureconnect@gmail.com</li>
           </ul>
         </div>
       </div>
       {/*copyright*/}
       <div>
         <hr />
-        <p className="py-5 text-sm text-center">Copyright 2024@ Swasthya Sahayak - All rights reserved.</p>
+        <p className="py-5 text-sm text-center">Copyright 2025@ Cure Connect - All rights reserved.</p>
       </div>
     </div>
   );

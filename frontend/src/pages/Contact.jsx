@@ -12,7 +12,7 @@ const ContactUs = () => {
         src={assets.contact_image} alt=''/>
         <div className='flex flex-col justify-center items-start gap-6'>
           <p className='font-semibold text-lg text-gray-600'>OUR OFFICE</p>
-          <p className='text-gray-500'>32,Anandapur,Kolkata <br/> Phn.No.: +91 8434555132<br/> E-mail:swasthyasahayak@gmail.com</p>
+          <p className='text-gray-500'>32,Anandapur,Kolkata <br/> Phn.No.: +91 8434555132<br/> E-mail:cureconnect@gmail.com</p>
           <p className='font-semibold text-lg text-gray-600'>Careers at CureConnect</p>
           <p>Learn more about our teams and job openings</p>
 <button className='border border-black px-8 py-4 text-sm hover:bg-black hover:text-white transition-all duration-500'>Explore jobs</button>
