@@ -21,7 +21,7 @@ const Home = () => {
           </Link>
 
           <a
-            href="http://localhost:5000"
+            href="https://diseaseprediction-alt.onrender.com/"
             className="p-4 bg-pink-400 text-white text-center rounded-lg shadow-md hover:bg-pink-600"
           >
             Disease Prediction
