@@ -1,4 +1,4 @@
-# CureConnect Frontend
+# CureConnect
 
 CureConnect is a healthcare web application designed to streamline patient, doctor, and ambulance services through an intuitive and efficient interface.
 
