@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 import numpy as np
 import pandas as pd
 import pickle
-
+#import os
 # flask app
 app = Flask(__name__)
 
@@ -15,6 +15,7 @@ medications = pd.read_csv('medications.csv')
 diets = pd.read_csv("diets.csv")
 
 # load model
+
 svc = pickle.load(open('svc.pkl','rb'))
 
 # helper function

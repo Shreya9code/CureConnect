@@ -18,6 +18,7 @@ import WellnessProgram from "./pages/WellnessProgram";
 import MedicineReminder from "./pages/MedicineReminder";
 import MentalHealth from "./pages/MentalHealth";
 import DoctorDashboard from "./pages/DoctorDashboard";
+import HomePage from "./pages/HomePage";
 const App = () => {
 
   return (
@@ -26,7 +27,8 @@ const App = () => {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+      <Route path="/" element={<HomePage />} />
+        <Route path="/patient" element={<Home />} />
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/doctors/:speciality" element={<Doctors />} />
         <Route path="/login" element={<Login />} />

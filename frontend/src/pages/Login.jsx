@@ -73,7 +73,9 @@ const Login = () => {
         setToken("dummyToken123");
         
         toast.success("Account created successfully!");
-        navigate(role === "Doctor" ? "/doctor" : "/");
+        //navigate(role === "Doctor" ? "/doctor" : "/");
+        navigate(role === "Doctor" ? "/doctor" : role === "Patient" ? "/patient" : "/");
+
       } else {
         const storedUser = JSON.parse(localStorage.getItem(userKey));
 
@@ -98,6 +100,9 @@ const Login = () => {
         
         // Redirect based on role
         switch (storedUser.role) {
+          case "Patient":
+            navigate("/patient");
+            break;
           case "Doctor":
             navigate("/doctor");
             break;
@@ -127,9 +132,12 @@ const Login = () => {
       const currentUser = JSON.parse(localStorage.getItem("currentUser"));
       if (currentUser?.role === "Doctor") {
         navigate("/doctor");
+      } else if (currentUser?.role === "Patient") {
+        navigate("/patient");
       }
     }
   }, [token, navigate]);
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-4">

@@ -11,10 +11,7 @@ const Footer = () => {
           className="mb-5 w-40"
           src={assets.logo} alt="" />
           <p className="w-full md:w-2/3 text-gray-600 leading-6">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa dicta
-            facere ducimus, animi non at doloribus voluptatibus soluta repellat
-            repellendus, mollitia amet ipsum, ex dolorum fugit explicabo quis
-            ullam assumenda.
+          At CureConnect, we envision a world where healthcare is not just a necessity but an empowering experience. We aim to bridge the gap between patients and healthcare providers through innovative technology and compassionate care.
           </p>
         </div>
         {/*center*/}
@@ -32,7 +29,7 @@ const Footer = () => {
           <p className="text-xl font-medium mb-5">Get in touch</p>
           <ul className="flex flex-col gap-2 text-gray-600">
             <li>+91 8240781544</li>
-            <li>cureconnect@gmail.com</li>
+            <li>cureconnect2025@gmail.com</li>
           </ul>
         </div>
       </div>
