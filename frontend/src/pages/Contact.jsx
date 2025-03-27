@@ -13,14 +13,14 @@ const ContactUs = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     emailjs.send(
-      'service_vurwljq', // Replace with your EmailJS service ID
-      'template_o8xqmf5', // Replace with your EmailJS template ID
+      'service_vurwljq', 
+      'template_o8xqmf5', 
       {
         name: formData.name,
         email: formData.email,
         message: formData.message,
       },
-      'RX9YcpAwFIgOxlCYw' // Replace with your EmailJS public key
+      'RX9YcpAwFIgOxlCYw' 
     )
     .then(() => {
       setSuccess(true);
