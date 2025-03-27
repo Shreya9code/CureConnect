@@ -14,7 +14,7 @@ const ContactUs = () => {
     e.preventDefault();
     emailjs.send(
       'service_vurwljq', // Replace with your EmailJS service ID
-      'template_xxxxxx', // Replace with your EmailJS template ID
+      'template_o8xqmf5', // Replace with your EmailJS template ID
       {
         name: formData.name,
         email: formData.email,
