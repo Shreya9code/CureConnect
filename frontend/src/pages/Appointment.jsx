@@ -73,10 +73,10 @@ const Appointment = () => {
       <div>
         {/* Doctor details */}
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="bg-blue-400 w-full sm:max-w-72 rounded-lg">
+          <div className="!bg-blue-400 w-full sm:max-w-72 rounded-lg">
             <img src={docInfo.image} alt="" />
           </div>
-          <div className="flex-1 border border-gray-400 rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
+          <div className="flex-1 border border-gray-400 rounded-lg p-8 py-7 !bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
             <p className="flex items-center gap-2 text-2xl font-medium text-gray-900">
               {docInfo.name}
               <img src={assets.verified_icon} alt="" />
@@ -101,7 +101,7 @@ const Appointment = () => {
                 <div
                   onClick={() => setSlotIndex(index)}
                   className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${
-                    slotIndex === index ? "bg-blue-500 text-white" : "border border-gray-200"
+                    slotIndex === index ? "!bg-blue-500 text-white" : "border border-gray-200"
                   }`}
                   key={index}
                 >
@@ -116,7 +116,7 @@ const Appointment = () => {
                 <p
                   onClick={() => setSlotTime(item.time)}
                   className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${
-                    item.time === slotTime ? "bg-blue-400 text-white" : "text-gray-400"
+                    item.time === slotTime ? "!bg-blue-400 text-white" : "text-gray-400"
                   }`}
                   key={index}
                 >
@@ -126,7 +126,7 @@ const Appointment = () => {
           </div>
           <button
             onClick={bookAppointment}
-            className="bg-blue-400 text-white text-sm font-light px-14 py-3 rounded-full mt-4"
+            className="!bg-blue-400 text-white text-sm font-light px-14 py-3 rounded-full mt-4"
           >
             Book an Appointment
           </button>

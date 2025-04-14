@@ -17,25 +17,25 @@ const Login = () => {
 
   const roleColors = {
     Patient: {
-      bg: "bg-teal-100",
+      bg: "!bg-teal-100",
       text: "text-teal-800",
-      selectedBg: "bg-teal-500",
+      selectedBg: "!bg-teal-500",
       selectedText: "text-white",
       hover: "hover:bg-teal-200",
     },
     Doctor: {
-      bg: "bg-blue-100",
+      bg: "!bg-blue-100",
       text: "text-blue-800",
-      selectedBg: "bg-blue-500",
+      selectedBg: "!bg-blue-500",
       selectedText: "text-white",
-      hover: "hover:bg-blue-200",
+      hover: "hover:!bg-blue-200",
     },
     "Ambulance Driver": {
-      bg: "bg-amber-100",
+      bg: "!bg-amber-100",
       text: "text-amber-800",
-      selectedBg: "bg-amber-500",
+      selectedBg: "!bg-amber-500",
       selectedText: "text-white",
-      hover: "hover:bg-amber-200",
+      hover: "hover:!bg-amber-200",
     },
   };
 
@@ -229,7 +229,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${
+              className={`w-full px-3 py-2 !bg-blue-500 text-white rounded-md hover:!bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${
                 isLoading ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >

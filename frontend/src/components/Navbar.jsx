@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { NavLink, useNavigate } from "react-router-dom";
+import MyProfile from "../pages/MyProfile";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -33,11 +34,11 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate("/login")}
-          className="bg-teal-600 text-white px-8 py-3 rounded-full font-light cursor-pointer block"
+          className="!bg-blue-600 text-white px-8 py-3 rounded-full font-light cursor-pointer block"
         >
           Create Account
         </button>
-
+{/*<MyProfile/>*/}
         <img
           onClick={() => setShowMenu(true)}
           className="w-6 md:hidden"
@@ -49,7 +50,7 @@ const Navbar = () => {
         <div
           className={`${
             showMenu ? "fixed w-full" : "h-0 w-0"
-          } md:hidden right-0 top-0 bottom-0 z-20 overflow-hidden bg-white transition-all`}
+          } md:hidden right-0 top-0 bottom-0 z-20 overflow-hidden !bg-white transition-all`}
         >
           <div className="flex items-center justify-between px-5 py-6">
             <img className="w-36" src={assets.logo} alt="" />

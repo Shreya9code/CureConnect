@@ -47,7 +47,7 @@ const Doctors = () => {
               key={spec}
               onClick={() => (speciality === spec ? navigate("/doctors") : navigate(`/doctors/${spec}`))}
               className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${
-                speciality?.toLowerCase().trim() === spec.toLowerCase().trim() ? "bg-indigo-100 text-black" : ""
+                speciality?.toLowerCase().trim() === spec.toLowerCase().trim() ? "!bg-indigo-100 text-black" : ""
               }`}
             >
               {spec}
@@ -64,10 +64,10 @@ const Doctors = () => {
                 onClick={() => navigate(`/appointment/${item._id}`)}
                 className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
               >
-                <img className="bg-blue-50 object-cover w-full h-40" src={item.image} alt={item.name} />
+                <img className="!bg-blue-50 object-cover w-full h-40" src={item.image} alt={item.name} />
                 <div className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-teal-500">
-                    <p className="w-2 h-2 bg-blue-500 rounded-full"></p>
+                  <div className="flex items-center gap-2 text-sm text-blue-500">
+                    <p className="w-2 h-2 !bg-blue-500 rounded-full"></p>
                     <span>Available</span>
                   </div>
                   <p className="text-gray-900 text-lg font-medium">{item.name}</p>

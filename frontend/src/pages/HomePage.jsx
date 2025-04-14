@@ -16,12 +16,11 @@ const HomePage = () => {
             Connect with top healthcare professionals, book appointments, and manage your health records all in one place.
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
-              Book an Appointment
-            </button>
-            <button className="px-6 py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 font-medium">
-              Learn More
-            </button>
+            
+          <button className="px-6 py-3 border border-blue-600 text-blue-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition duration-300 ease-in-out font-semibold shadow-sm hover:shadow-md">
+  Learn More
+</button>
+
           </div>
         </div>
         <div className="md:w-1/2 flex justify-center">
@@ -106,8 +105,7 @@ const HomePage = () => {
           <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
             Join thousands of patients who trust CureConnect for their healthcare needs.
           </p>
-          <button className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-lg">
-            Get Started Today
+          <button className="px-8 py-3 !bg-blue-600 text-white rounded-lg hover:!bg-blue-700 font-medium text-lg"> Get Started Today
           </button>
         </div>
       </section>

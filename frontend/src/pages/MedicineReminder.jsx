@@ -53,10 +53,10 @@ const MedicineReminder = () => {
   };
 
   return (
-    <div className="p-4 bg-yellow-100 rounded-lg">
+    <div className="p-4 !bg-yellow-100 rounded-lg">
       <h2 className="text-xl font-bold">Medicine Reminder</h2>
       
-      <button onClick={requestNotificationPermission} className="bg-blue-500 text-white p-1 rounded">
+      <button onClick={requestNotificationPermission} className="!bg-blue-500 text-white p-1 rounded">
         Enable Notifications
       </button>
 
@@ -74,7 +74,7 @@ const MedicineReminder = () => {
           onChange={(e) => setMedicine(e.target.value)}
           className="border p-1 rounded ml-2"
         />
-        <button onClick={addReminder} className="bg-yellow-500 text-white p-1 rounded ml-2">
+        <button onClick={addReminder} className="!bg-yellow-500 text-white p-1 rounded ml-2">
           Add Reminder
         </button>
       </div>
