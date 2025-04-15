@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { token, setToken } = useContext(AppContext);
+  const { token, setToken, setUserData } = useContext(AppContext);
   const [state, setState] = useState("Sign Up");
   const [role, setRole] = useState("Patient");
   const [isLoading, setIsLoading] = useState(false);
@@ -51,55 +51,64 @@ const Login = () => {
           setIsLoading(false);
           return;
         }
+        const endpoint =
+          role === "Doctor"
+            ? "http://localhost:4000/api/doctor/signup"
+            : role === "Patient"
+            ? "http://localhost:4000/api/user/register"
+            : "http://localhost:4000/api/ambulance/register";
 
-        // Check if user already exists
-        if (localStorage.getItem(userKey)) {
-          toast.error("User already exists with this email!");
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password, role }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          toast.error(data.message || "Registration failed!");
           setIsLoading(false);
           return;
         }
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+        // Save user data to localStorage
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
 
-        const userData = { 
-          name, 
-          email, 
-          password, 
-          role,
-          createdAt: new Date().toISOString() 
-        };
-
-        localStorage.setItem(userKey, JSON.stringify(userData));
-        localStorage.setItem("currentUser", JSON.stringify(userData));
-        localStorage.setItem("token", "dummyToken123");
-        setToken("dummyToken123");
-        
         toast.success("Account created successfully!");
-        //navigate(role === "Doctor" ? "/doctor" : "/");
-        navigate(role === "Doctor" ? "/doctor" : role === "Patient" ? "/patient" : "/");
-
+        navigate(
+          role === "Doctor" ? "/doctor" : role === "Patient" ? "/patient" : "/"
+        );
       } else {
-        const storedUser = JSON.parse(localStorage.getItem(userKey));
+        const loginEndpoint =
+          role === "Doctor"
+            ? "http://localhost:4000/api/doctor/login"
+            : role === "Patient"
+            ? "http://localhost:4000/api/user/login"
+            : "http://localhost:4000/api/ambulance/login";
 
-        if (!storedUser) {
-          toast.error("User not found. Please sign up first.");
+        const response = await fetch(loginEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          toast.error(data.message || "Login failed!");
           setIsLoading(false);
           return;
         }
 
-        if (storedUser.password !== password) {
-          toast.error("Invalid password");
-          setIsLoading(false);
-          return;
-        }
-
-        // Update current user data
-        localStorage.setItem("currentUser", JSON.stringify(storedUser));
-        localStorage.setItem("token", "dummyToken123");
-        setToken("dummyToken123");
-        
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("currentUser", JSON.stringify(data.user)); // Make sure to store user data
+        setToken(data.token);
+        setUserData(data.user); // Update user data in context
         toast.success("Logged in successfully!");
-        
-        // Redirect based on role
-        switch (storedUser.role) {
+
+        switch (data.user.role) {
           case "Patient":
             navigate("/patient");
             break;
@@ -107,17 +116,17 @@ const Login = () => {
             navigate("/doctor");
             break;
           case "Ambulance Driver":
-            navigate("/ambulance"); // You might want to create this route
+            navigate("/ambulance");
             break;
           default:
             navigate("/");
         }
       }
-      
-      // Clear form fields
+
+      /* Clear form fields
       setEmail("");
       setPassword("");
-      setName("");
+      setName("");*/
     } catch (error) {
       toast.error("An error occurred. Please try again.");
       console.error("Login error:", error);
@@ -130,14 +139,22 @@ const Login = () => {
     if (token) {
       // Check if we have a current user to determine where to redirect
       const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-      if (currentUser?.role === "Doctor") {
-        navigate("/doctor");
-      } else if (currentUser?.role === "Patient") {
-        navigate("/patient");
-      }
+      if (currentUser) {
+        switch (currentUser.role) {
+          case "Patient":
+            navigate("/patient");
+            break;
+          case "Doctor":
+            navigate("/doctor");
+            break;
+          case "Ambulance Driver":
+            navigate("/ambulance");
+            break;
+          default:
+            navigate("/");
+        }}
     }
   }, [token, navigate]);
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-4">
@@ -235,9 +252,25 @@ const Login = () => {
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Processing...
                 </span>

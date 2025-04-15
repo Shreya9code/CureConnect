@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { assets } from "../assets/assets";
 import { NavLink, useNavigate } from "react-router-dom";
 import MyProfile from "../pages/MyProfile";
+import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
+  const { token, logout, userData } = useContext(AppContext);
 
   return (
     <div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400">
@@ -32,19 +34,32 @@ const Navbar = () => {
       </ul>
 
       <div className="flex items-center gap-4">
-        <button
-          onClick={() => navigate("/login")}
-          className="!bg-blue-600 text-white px-8 py-3 rounded-full font-light cursor-pointer block"
-        >
-          Create Account
-        </button>
-{/*<MyProfile/>*/}
-        <img
-          onClick={() => setShowMenu(true)}
-          className="w-6 md:hidden"
-          src={assets.menu_icon}
-          alt=""
-        />
+  {userData ? (
+    <NavLink to="/my-profile">
+      <div
+        className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold cursor-pointer hover:scale-105 transition"
+        title={userData.name}
+      >
+        {userData.name?.charAt(0).toUpperCase() || "U"}
+      </div>
+    </NavLink>
+  ) : (
+    <button
+      onClick={() => navigate("/login")}
+      className="!bg-blue-600 text-white px-8 py-3 rounded-full font-light cursor-pointer block"
+    >
+      Create Account
+    </button>
+  )}
+
+  <img
+    onClick={() => setShowMenu(true)}
+    className="w-6 md:hidden"
+    src={assets.menu_icon}
+    alt="menu"
+  />
+</div>
+
 
         {/* Mobile Menu */}
         <div
@@ -77,7 +92,7 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
-    </div>
+    
   );
 };
 

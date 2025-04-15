@@ -1,3 +1,5 @@
+// frontend/src/context/AppContext.jsx
+
 import { createContext, useState, useEffect } from "react";
 import { doctors as doctorData } from "../assets/assets";
 import { toast } from "react-toastify";
@@ -7,42 +9,67 @@ export const AppContext = createContext();
 const AppContextProvider = (props) => {
   const currencySymbol = "Rs.";
 
-  // Dummy doctors data (previously fetched from backend)
-  const [doctors, setDoctors] = useState(doctorData);
-
-  // No authentication, just assume the user is logged in
+  const [doctors, setDoctors] = useState([]);
   const [token, setToken] = useState(null);
-  const [userData, setUserData] = useState({
-    name: "Guest User",
-    email: "guest@example.com",
-    phone: "1234567890",
-    image: "/default-avatar.png", // Use a placeholder
-    address: { line1: "Unknown", line2: "" },
-    gender: "Not specified",
-    dob: "01-01-2000",
-  });
+  const [userData, setUserData] = useState(null);
 
-  // Function to load doctors (was fetching from backend before)
+  // Load doctors from local dummy data (offline mode)
   const getDoctorsData = () => {
     toast.info("Using offline data for doctors");
     setDoctors(doctorData);
   };
 
+  // Load user & token from localStorage on app load
   useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("currentUser");
+
+    if (storedToken && storedUser && storedUser !== "undefined") {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setToken(storedToken);
+        setUserData(parsedUser);
+      } catch (e) {
+        console.error("Corrupt user data in localStorage:", e);
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("token");
+      }
+    }
+
     getDoctorsData();
   }, []);
 
+  // Keep user data in sync with localStorage when it changes
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem("currentUser", JSON.stringify(userData));
+    }
+  }, [userData]);
+
+  // Function to logout user
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("currentUser");
+    setToken(null);
+    setUserData(null);
+    toast.success("Logged out successfully");
+  };
+
   const value = {
-    doctors,
     currencySymbol,
     token,
     setToken,
     userData,
     setUserData,
+    doctors,
+    getDoctorsData,
+    logout,
   };
 
   return (
-    <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
+    <AppContext.Provider value={value}>
+      {props.children}
+    </AppContext.Provider>
   );
 };
 
