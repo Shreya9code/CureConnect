@@ -26,3 +26,6 @@ npm run dev
 cd backend
 npm i
 npm run server
+```
+### ✨ Made by *Team CodeHacks*
+Driven by code. Fueled by purpose.
