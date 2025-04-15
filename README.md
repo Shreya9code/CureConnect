@@ -11,12 +11,18 @@ CureConnect is a healthcare web application designed to streamline patient, doct
 ## 🛠️ Tech Stack
 - **Frontend**: React.js, Tailwind CSS
 - **State Management**: Context API
-- **Backend**: (To be integrated)
-- **AI Models**: (to be integrated)
+- **Backend**: (Logics done.To be integrated)
+- **AI Models**:AI-powered features such as disease prediction and prescription analysis are integrated.
 
 ## 📦 Setup & Deployment
 ### Installation
 ```sh
+git clone <repository-url>
+
 cd frontend
 npm install
 npm run dev
+
+cd backend
+npm i
+npm run server
