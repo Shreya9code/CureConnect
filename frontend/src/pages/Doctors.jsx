@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { doctors } from "../assets/assets"; // Importing doctors from assets
+import axios from "axios";
 
 const Doctors = () => {
   const { speciality } = useParams();
   const navigate = useNavigate();
-
+  const [doctors, setDoctors] = useState([]);
   const [filterDoc, setFilterDoc] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
-
+  // Fetch all doctors from backend
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/doctor/list");
+        setDoctors(res.data.doctors || []);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      }
+    };
+    fetchDoctors();
+  }, []);
   // Apply filter based on selected speciality
   useEffect(() => {
     if (speciality) {
@@ -18,7 +30,7 @@ const Doctors = () => {
     } else {
       setFilterDoc(doctors);
     }
-  }, [speciality]);
+  }, [speciality,doctors]);
 
   return (
     <div>

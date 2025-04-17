@@ -1,5 +1,4 @@
 // frontend/src/context/AppContext.jsx
-
 import { createContext, useState, useEffect } from "react";
 import { doctors as doctorData } from "../assets/assets";
 import { toast } from "react-toastify";
@@ -14,10 +13,18 @@ const AppContextProvider = (props) => {
   const [userData, setUserData] = useState(null);
 
   // Load doctors from local dummy data (offline mode)
-  const getDoctorsData = () => {
-    toast.info("Using offline data for doctors");
-    setDoctors(doctorData);
-  };
+  const getDoctorsData = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/api/doctor/list");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to fetch doctors");
+      setDoctors(data.doctors); // Make sure your backend sends an array under `doctors`
+    } catch (error) {
+      toast.error("Failed to load doctors from backend. Using offline data.");
+      console.error(error);
+      setDoctors(doctorData); // fallback to dummy data
+    }
+  };  
 
   // Load user & token from localStorage on app load
   useEffect(() => {

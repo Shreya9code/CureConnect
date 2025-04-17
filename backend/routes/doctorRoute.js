@@ -12,7 +12,7 @@ import authDoctor from '../middlewares/authDoctor.js';
 
 const doctorRouter = express.Router();
 
-doctorRouter.post('/signup', signupDoctor); // ✅ new
+doctorRouter.post('/signup', signupDoctor); 
 doctorRouter.post('/login', loginDoctor);
 doctorRouter.get('/list', doctorList);
 doctorRouter.get('/appointments', authDoctor, appointmentsDoctor);

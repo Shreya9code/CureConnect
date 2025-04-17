@@ -10,6 +10,7 @@ import {
 } from "../controllers/userController.js";
 import authUser from "../middlewares/authUser.js";
 import { upload } from "../middlewares/multer.js";
+import { doctorList } from "../controllers/doctorController.js";
 
 const userRouter = express.Router();
 
@@ -22,6 +23,7 @@ userRouter.post(
   authUser,
   updateProfile
 );
+userRouter.get('/list', doctorList);
 userRouter.post("/book-appointment", authUser, bookAppointment);
 userRouter.get("/appointments", authUser, listAppointment);
 userRouter.post("/cancel-appointment", authUser, cancelAppointment);

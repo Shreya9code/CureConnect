@@ -4,16 +4,18 @@ import { AppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
 import RelatedDoctors from "../components/RelatedDoctors";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Appointment = () => {
   const { docId } = useParams();
   const navigate = useNavigate();
   const { doctors, currencySymbol } = useContext(AppContext);
-  
+
   const [docInfo, setDocInfo] = useState(null);
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState("");
+  const [slotDate, setSlotDate] = useState("");
 
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THURS", "FRI", "SAT"];
 
@@ -29,7 +31,7 @@ const Appointment = () => {
 
     setDocSlots([]);
     let today = new Date();
-    
+
     for (let i = 0; i < 7; i++) {
       let currentDate = new Date(today);
       currentDate.setDate(today.getDate() + i);
@@ -48,24 +50,51 @@ const Appointment = () => {
       while (currentDate < endTime) {
         timeSlots.push({
           datetime: new Date(currentDate),
-          time: currentDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          time: currentDate.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
         });
         currentDate.setMinutes(currentDate.getMinutes() + 30);
       }
-
       setDocSlots((prev) => [...prev, timeSlots]);
     }
   }, [docInfo]);
 
   // Mock Booking (No Backend)
-  const bookAppointment = () => {
+  const bookAppointment = async () => {
     if (!slotTime) {
       toast.warn("Please select a time slot.");
       return;
     }
-
-    toast.success(`Appointment booked with ${docInfo.name} at ${slotTime}!`);
-    navigate("/my-appointments");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login first.");
+      navigate("/login");
+      return;
+    }
+    const selectedSlot = docSlots[slotIndex]?.[0]?.datetime;
+  if (!selectedSlot) {
+    toast.error("Invalid slot selected.");
+    return;
+  }
+  const slotDate = selectedSlot.toISOString().split("T")[0]; // "YYYY-MM-DD"
+    try {
+      const res = await axios.post("http://localhost:4000/api/user/book-appointment", {
+        docId,
+        slotDate,
+        slotTime,
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(res.data.message || `Appointment booked with ${docInfo.name} at ${slotTime}!`);
+      navigate("/my-appointments");
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Booking failed. Try again.");
+    }
   };
 
   return (
@@ -74,7 +103,11 @@ const Appointment = () => {
         {/* Doctor details */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="!bg-blue-400 w-full sm:max-w-72 rounded-lg">
-            <img src={docInfo.image} alt="" />
+            <img src={docInfo.image} alt="" onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/150";
+              }}
+              className="w-full h-full object-cover"/>
           </div>
           <div className="flex-1 border border-gray-400 rounded-lg p-8 py-7 !bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
             <p className="flex items-center gap-2 text-2xl font-medium text-gray-900">
@@ -82,12 +115,22 @@ const Appointment = () => {
               <img src={assets.verified_icon} alt="" />
             </p>
             <div className="flex items-center gap-2 text-sm mt-1 text-gray-600">
-              <p>{docInfo.degree} - {docInfo.speciality}</p>
-              <button className="py-0.5 px-2 border text-xs rounded-full">{docInfo.experience}</button>
+              <p>
+                {docInfo.degree} - {docInfo.speciality}
+              </p>
+              <button className="py-0.5 px-2 border text-xs rounded-full">
+                {docInfo.experience}
+              </button>
             </div>
-            <p className="text-sm text-gray-500 max-w-[700px] mt-1">{docInfo.about}</p>
+            <p className="text-sm text-gray-500 max-w-[700px] mt-1">
+              {docInfo.about}
+            </p>
             <p className="text-gray-500 font-medium mt-4">
-              Appointment Fee: <span className="text-gray-600">{currencySymbol}{docInfo.fees}</span>
+              Appointment Fee:{" "}
+              <span className="text-gray-600">
+                {currencySymbol}
+                {docInfo.fees}
+              </span>
             </p>
           </div>
         </div>
@@ -99,9 +142,17 @@ const Appointment = () => {
             {docSlots.length &&
               docSlots.map((item, index) => (
                 <div
-                  onClick={() => setSlotIndex(index)}
+                  onClick={() => {
+                    setSlotIndex(index);
+                    if (docSlots[index][0]) {
+                      const dateObj = docSlots[index][0].datetime;
+                      setSlotDate(dateObj.toISOString().split("T")[0]); // YYYY-MM-DD
+                    }
+                  }}
                   className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${
-                    slotIndex === index ? "!bg-blue-500 text-white" : "border border-gray-200"
+                    slotIndex === index
+                      ? "!bg-blue-500 text-white"
+                      : "border border-gray-200"
                   }`}
                   key={index}
                 >
@@ -116,7 +167,9 @@ const Appointment = () => {
                 <p
                   onClick={() => setSlotTime(item.time)}
                   className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${
-                    item.time === slotTime ? "!bg-blue-400 text-white" : "text-gray-400"
+                    item.time === slotTime
+                      ? "!bg-blue-400 text-white"
+                      : "text-gray-400"
                   }`}
                   key={index}
                 >
