@@ -110,14 +110,14 @@ const MyProfile = () => {
       <div className="mt-10">
         {isEdit ? (
           <button
-            className="border px-8 py-2 rounded hover:!bg-blue-500 text-white"
+            className="border px-8 py-2 rounded !bg-blue-600 hover:!bg-blue-500 text-white"
             onClick={updateUserProfileData}
           >
             Save Info
           </button>
         ) : (
           <button
-            className="border px-8 py-2 rounded hover:!bg-blue-500 text-white"
+            className="border px-8 py-2 rounded !bg-blue-600 hover:!bg-blue-500 text-white"
             onClick={() => setIsEdit(true)}
           >
             Edit
@@ -129,7 +129,7 @@ const MyProfile = () => {
       <div className="mt-6">
         <button
           onClick={handleLogout}
-          className="border px-8 py-2 rounded bg-red-500 text-white"
+          className="border px-8 py-2 rounded !bg-red-500 text-white"
         >
           Logout
         </button>
