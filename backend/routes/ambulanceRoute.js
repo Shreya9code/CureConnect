@@ -3,7 +3,7 @@ import { registerAmbulanceDriver, loginAmbulanceDriver } from "../controllers/am
 
 const ambulanceRouter = express.Router();
 
-ambulanceRouter.post("/register", registerAmbulanceDriver);
+ambulanceRouter.post("/signup", registerAmbulanceDriver);
 ambulanceRouter.post("/login", loginAmbulanceDriver);
 
 export default ambulanceRouter;

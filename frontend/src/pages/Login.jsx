@@ -1,316 +1,238 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const { token, setToken, setUserData } = useContext(AppContext);
-  const [state, setState] = useState("Sign Up");
-  const [role, setRole] = useState("Patient");
-  const [isLoading, setIsLoading] = useState(false);
+function Login() {
+  const navigate = useNavigate();
+  const { setToken, setUserData } = useContext(AppContext);
 
+  const [state, setState] = useState("Login"); // "Login" or "Sign Up"
+  const [role, setRole] = useState("User");
+
+  // Common fields
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
 
-  const navigate = useNavigate();
+  // Doctor-specific fields
+  const [image, setImage] = useState("");
+  const [speciality, setSpeciality] = useState("");
+  const [degree, setDegree] = useState("");
+  const [experience, setExperience] = useState("");
+  const [about, setAbout] = useState("");
+  const [fees, setFees] = useState("");
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [phone, setPhone] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
-  const roleColors = {
-    Patient: {
-      bg: "!bg-teal-100",
-      text: "text-teal-800",
-      selectedBg: "!bg-teal-500",
-      selectedText: "text-white",
-      hover: "hover:bg-teal-200",
-    },
-    Doctor: {
-      bg: "!bg-blue-100",
-      text: "text-blue-800",
-      selectedBg: "!bg-blue-500",
-      selectedText: "text-white",
-      hover: "hover:!bg-blue-200",
-    },
-    "Ambulance Driver": {
-      bg: "!bg-amber-100",
-      text: "text-amber-800",
-      selectedBg: "!bg-amber-500",
-      selectedText: "text-white",
-      hover: "hover:!bg-amber-200",
-    },
-  };
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
 
-  const onSubmitHandler = async (event) => {
-    event.preventDefault();
-    setIsLoading(true);
-    const userKey = email.toLowerCase(); // Using email as key for better uniqueness
+    const baseURL = `http://localhost:4000/api/${role.toLowerCase()}`;
+    const url = state === "Login" ? `${baseURL}/login` : `${baseURL}/signup`;
+
+    const body =
+      state === "Login"
+        ? { email, password }
+        : role === "Doctor"
+        ? {
+            name,
+            email,
+            password,
+            image,
+            speciality,
+            degree,
+            experience,
+            about,
+            fees,
+            address: {
+              line1: addressLine1,
+              line2: addressLine2,
+            },
+            phone,
+            date,
+          }
+        : { name, email, password }; // User & AmbulanceDriver
 
     try {
-      if (state === "Sign Up") {
-        if (!email || !password || !name) {
-          toast.error("All fields are required!");
-          setIsLoading(false);
-          return;
-        }
-        const endpoint =
-          role === "Doctor"
-            ? "http://localhost:4000/api/doctor/signup"
-            : role === "Patient"
-            ? "http://localhost:4000/api/user/register"
-            : "http://localhost:4000/api/ambulance/register";
+      const res = await axios.post(url, body);
+      const token = res?.data?.token;
+      const user = res?.data?.user || res?.data;
+      
+      localStorage.setItem("token", token);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      localStorage.setItem("role", role.toLowerCase());
 
-        const response = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password, role }),
-        });
+      setToken(token);
+      setUserData(user);
 
-        const data = await response.json();
+      toast.success(`${state} successful! Welcome ${user.name || "back"} 🎉`);
 
-        if (!response.ok) {
-          toast.error(data.message || "Registration failed!");
-          setIsLoading(false);
-          return;
-        }
-        localStorage.setItem("token", data.token);
-        setToken(data.token);
-        // Save user data to localStorage
-        localStorage.setItem("currentUser", JSON.stringify(data.user));
-
-        toast.success("Account created successfully!");
-        navigate(
-          role === "Doctor" ? "/doctor" : role === "Patient" ? "/patient" : "/"
-        );
-      } else {
-        const loginEndpoint =
-          role === "Doctor"
-            ? "http://localhost:4000/api/doctor/login"
-            : role === "Patient"
-            ? "http://localhost:4000/api/user/login"
-            : "http://localhost:4000/api/ambulance/login";
-
-        const response = await fetch(loginEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          toast.error(data.message || "Login failed!");
-          setIsLoading(false);
-          return;
-        }
-
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("currentUser", JSON.stringify(data.user)); // Make sure to store user data
-        setToken(data.token);
-        setUserData(data.user); // Update user data in context
-        toast.success("Logged in successfully!");
-
-        switch (data.user.role) {
-          case "Patient":
-            navigate("/patient");
-            break;
-          case "Doctor":
-            navigate("/doctor");
-            break;
-          case "Ambulance Driver":
-            navigate("/ambulance");
-            break;
-          default:
-            navigate("/");
-        }
-      }
-
-      /* Clear form fields
-      setEmail("");
-      setPassword("");
-      setName("");*/
-    } catch (error) {
-      toast.error("An error occurred. Please try again.");
-      console.error("Login error:", error);
-    } finally {
-      setIsLoading(false);
+      if (role === "Doctor") navigate("/doctor");
+      else if (role === "AmbulanceDriver") navigate("/ambulance");
+      else navigate("/patient");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Something went wrong. Try again.");
     }
   };
 
-  useEffect(() => {
-    if (token) {
-      // Check if we have a current user to determine where to redirect
-      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-      if (currentUser) {
-        switch (currentUser.role) {
-          case "Patient":
-            navigate("/patient");
-            break;
-          case "Doctor":
-            navigate("/doctor");
-            break;
-          case "Ambulance Driver":
-            navigate("/ambulance");
-            break;
-          default:
-            navigate("/");
-        }}
-    }
-  }, [token, navigate]);
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-4">
-      <div className="w-full max-w-md p-8 space-y-6 rounded-xl shadow-lg border border-gray-200 bg-blue-50">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-blue-900">
-            {state === "Sign Up" ? "Create Account" : "Welcome Back"}
-          </h2>
-          <p className="text-lg text-gray-600 font-medium">
-            {state === "Sign Up"
-              ? "Join us to get started!"
-              : "Log in to continue to your account"}
-          </p>
-        </div>
+    <div className="min-h-screen flex justify-center items-center !bg-gray-200 px-4">
+      <div className="w-full max-w-lg bg-white shadow-xl rounded-lg p-6 space-y-4">
+        <h2 className="text-2xl font-bold text-center">
+          {state === "Login" ? "Login" : "Register"} as {role}
+        </h2>
 
-        <div className="flex justify-between bg-blue-200 p-1 rounded-lg gap-2">
-          {["Patient", "Doctor", "Ambulance Driver"].map((r) => (
-            <div
+        <div className="flex justify-center gap-4">
+          {["User", "Doctor", "AmbulanceDriver"].map((r) => (
+            <button
               key={r}
-              className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                role === r
-                  ? "bg-blue-600 text-white shadow-md scale-105"
-                  : "bg-blue-400 text-white hover:bg-blue-500"
+              className={`px-4 py-1 rounded ${
+                role === r ? "!bg-blue-600 text-white" : "bg-gray-200"
               }`}
               onClick={() => setRole(r)}
             >
-              {r}
-            </div>
+              {r === "AmbulanceDriver" ? "Ambulance" : r}
+            </button>
           ))}
         </div>
 
-        <form className="space-y-4" onSubmit={onSubmitHandler}>
-          <div className="space-y-4">
-            <p className="text-sm text-center text-gray-500">
-              {state === "Sign Up" ? "Sign Up as a" : "Login as a"}{" "}
-              <span
-                className="font-bold"
-                style={{ color: roleColors[role].text }}
-              >
-                {role}
-              </span>
-            </p>
+        <form onSubmit={onSubmitHandler} className="space-y-3">
+          {state === "Sign Up" && (
+            <input
+              type="text"
+              placeholder="Name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+          )}
 
-            {state === "Sign Up" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="John Doe"
-                />
-              </div>
-            )}
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
+          {/* Doctor-specific fields */}
+          {state === "Sign Up" && role === "Doctor" && (
+            <>
               <input
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
+                type="text"
+                placeholder="Speciality"
+                value={speciality}
+                onChange={(e) => setSpeciality(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                placeholder="your@email.com"
+                className="w-full border p-2 rounded"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
               <input
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
+                type="text"
+                placeholder="Degree"
+                value={degree}
+                onChange={(e) => setDegree(e.target.value)}
                 required
-                minLength={6}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                placeholder="••••••••"
+                className="w-full border p-2 rounded"
               />
-            </div>
+              <input
+                type="text"
+                placeholder="Experience"
+                value={experience}
+                onChange={(e) => setExperience(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+              <textarea
+                placeholder="About"
+                value={about}
+                onChange={(e) => setAbout(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="number"
+                placeholder="Fees"
+                value={fees}
+                onChange={(e) => setFees(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="tel"
+                placeholder="Phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="text"
+                placeholder="Address Line 1"
+                value={addressLine1}
+                onChange={(e) => setAddressLine1(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="text"
+                placeholder="Address Line 2"
+                value={addressLine2}
+                onChange={(e) => setAddressLine2(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="text"
+                placeholder="Image URL"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full border p-2 rounded"
+              />
+            </>
+          )}
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`w-full px-3 py-2 !bg-blue-500 text-white rounded-md hover:!bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${
-                isLoading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-            >
-              {isLoading ? (
-                <span className="flex items-center justify-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Processing...
-                </span>
-              ) : state === "Sign Up" ? (
-                "Create Account"
-              ) : (
-                "Login"
-              )}
-            </button>
-
-            <div className="text-center text-sm text-gray-600">
-              {state === "Sign Up" ? (
-                <>
-                  Already have an account?{" "}
-                  <button
-                    type="button"
-                    onClick={() => setState("Login")}
-                    className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none"
-                  >
-                    Login here
-                  </button>
-                </>
-              ) : (
-                <>
-                  Don't have an account?{" "}
-                  <button
-                    type="button"
-                    onClick={() => setState("Sign Up")}
-                    className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none"
-                  >
-                    Sign up
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
+          <button
+            type="submit"
+            className="w-full !bg-blue-600 text-white p-2 rounded hover:!bg-blue-700"
+          >
+            {state === "Login" ? "Login" : "Register"}
+          </button>
         </form>
+
+        <p className="text-center">
+          {state === "Login" ? "Don't have an account?" : "Already have an account?"}{" "}
+          <span
+            className="text-blue-600 cursor-pointer"
+            onClick={() => setState(state === "Login" ? "Sign Up" : "Login")}
+          >
+            {state === "Login" ? "Sign Up" : "Login"}
+          </span>
+        </p>
       </div>
     </div>
   );
-};
+}
 
 export default Login;
