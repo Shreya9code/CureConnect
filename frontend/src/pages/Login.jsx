@@ -28,10 +28,18 @@ function Login() {
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
+  const [vehicleNumber, setVehicleNumber] = useState("");
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const baseURL = `http://localhost:4000/api/${role.toLowerCase()}`;
+    const roleToEndpoint = {
+      User: "user",
+      Doctor: "doctor",
+      AmbulanceDriver: "ambulance",
+    };
+
+    const baseURL = `http://localhost:4000/api/${roleToEndpoint[role]}`;
     const url = state === "Login" ? `${baseURL}/login` : `${baseURL}/signup`;
 
     const body =
@@ -55,13 +63,21 @@ function Login() {
             phone,
             date,
           }
-        : { name, email, password }; // User & AmbulanceDriver
+        : role === "Ambulance"
+        ? {
+            name,
+            email,
+            password,
+            phone,
+            vehicleNumber,
+          }
+        : { name, email, password };
 
     try {
       const res = await axios.post(url, body);
       const token = res?.data?.token;
       const user = res?.data?.user || res?.data;
-      
+
       localStorage.setItem("token", token);
       localStorage.setItem("currentUser", JSON.stringify(user));
       localStorage.setItem("role", role.toLowerCase());
@@ -72,11 +88,13 @@ function Login() {
       toast.success(`${state} successful! Welcome ${user.name || "back"} 🎉`);
 
       if (role === "Doctor") navigate("/doctor");
-      else if (role === "AmbulanceDriver") navigate("/ambulance");
+      else if (role === "AmbulanceDriver"|| role === "Ambulance") navigate("/ambulance");
       else navigate("/patient");
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Something went wrong. Try again.");
+      toast.error(
+        err.response?.data?.message || "Something went wrong. Try again."
+      );
     }
   };
 
@@ -92,7 +110,7 @@ function Login() {
             <button
               key={r}
               className={`px-4 py-1 rounded ${
-                role === r ? "!bg-blue-600 text-white" : "bg-gray-200"
+                role === r ? "!bg-blue-600 text-white" : "!bg-gray-200"
               }`}
               onClick={() => setRole(r)}
             >
@@ -212,6 +230,26 @@ function Login() {
               />
             </>
           )}
+          {state === "Sign Up" && role === "AmbulanceDriver" && (
+            <>
+              <input
+                type="tel"
+                placeholder="Phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="text"
+                placeholder="Vehicle Number"
+                value={vehicleNumber}
+                onChange={(e) => setVehicleNumber(e.target.value)}
+                required
+                className="w-full border p-2 rounded"
+              />
+            </>
+          )}
 
           <button
             type="submit"
@@ -222,7 +260,9 @@ function Login() {
         </form>
 
         <p className="text-center">
-          {state === "Login" ? "Don't have an account?" : "Already have an account?"}{" "}
+          {state === "Login"
+            ? "Don't have an account?"
+            : "Already have an account?"}{" "}
           <span
             className="text-blue-600 cursor-pointer"
             onClick={() => setState(state === "Login" ? "Sign Up" : "Login")}
