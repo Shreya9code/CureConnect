@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const months = [
@@ -30,21 +32,44 @@ const MyAppointments = () => {
     );
   };
 
-  const getUserAppointments = () => {
-    const storedAppointments = JSON.parse(localStorage.getItem("appointments")) || [];
-    setAppointments(storedAppointments.reverse());
+  const getUserAppointments = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login to view appointments.");
+      navigate("/login");
+      return;
+    }
+    try {
+      const res = await axios.get("http://localhost:4000/api/user/appointments", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAppointments(res.data.appointments.reverse());
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch appointments.");
+    }
   };
 
-  const cancelAppointment = (appointmentId) => {
-    let updatedAppointments = appointments.map((appointment) =>
-      appointment._id === appointmentId
-        ? { ...appointment, cancelled: true }
-        : appointment
-    );
-    
-    localStorage.setItem("appointments", JSON.stringify(updatedAppointments));
-    setAppointments(updatedAppointments);
-    toast.success("Appointment cancelled successfully!");
+  const cancelAppointment = async (appointmentId) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.patch(
+        `http://localhost:4000/api/user/cancel-appointment/${appointmentId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Appointment cancelled successfully!");
+      getUserAppointments();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to cancel appointment.");
+    }
   };
 
   useEffect(() => {
