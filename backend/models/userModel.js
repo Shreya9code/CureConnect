@@ -14,6 +14,8 @@ const userSchema =new mongoose.Schema({
   gender: { type: String, default: "Not Selected" },
   dob: { type: String, default: "Not Selected" },
   phone: { type: Number, required: false },
+  verificationToken: { type: String },  // Token for email verification
+  isVerified: { type: Boolean, default: false },  // Boolean to check if email is verified
 });
 
 const userModel =

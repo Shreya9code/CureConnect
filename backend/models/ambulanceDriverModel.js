@@ -11,6 +11,8 @@ const ambulanceDriverSchema = new mongoose.Schema({
     lat: Number,
     lng: Number,
   },
+ /* verificationToken: { type: String },  // Token for email verification
+  isVerified: { type: Boolean, default: false },  // Boolean to check if email is verified*/
 });
 
 //module.exports = mongoose.model("AmbulanceDriver", ambulanceDriverSchema);

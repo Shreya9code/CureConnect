@@ -15,7 +15,8 @@ const doctorSchema =new mongoose.Schema({//same str as assets..details
     date: {type: Date, required: true},
     slots_booked: {type: Object, default: {} },
     phone: { type: Number, required: false },
-
+    /*verificationToken: { type: String },  // Token for email verification
+    isVerified: { type: Boolean, default: false },  // Boolean to check if email is verified*/  
 },{minimize: false});
 
 const doctorModel = mongoose.models.doctor || mongoose.model('doctor', doctorSchema);

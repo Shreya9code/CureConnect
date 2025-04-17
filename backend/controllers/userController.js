@@ -5,7 +5,10 @@ import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
-
+import { sendVerificationEmail } from "../utils/sendEmail.js";
+import crypto from "crypto";
+// generate token
+const verificationToken = crypto.randomBytes(32).toString("hex");
 //api to register user
 const registerUser = async (req, res) => {
   try {
@@ -33,11 +36,13 @@ const registerUser = async (req, res) => {
     const userData = {
       name,
       email,
-      password: hashedPassword,
+      password: hashedPassword,emailToken: verificationToken,
+      isVerified: false
     };
     //save user to database
     const newUser = new userModel(userData);
     const user = await newUser.save();
+    await sendVerificationEmail(email, verificationToken);
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
@@ -45,7 +50,7 @@ const registerUser = async (req, res) => {
     console.log("Generated Token:", token);
     return res
       .status(201)
-      .json({ success: true, message: "User registered successfully", token });
+      .json({ success: true, message: "User registered successfully.pls verify email", token });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

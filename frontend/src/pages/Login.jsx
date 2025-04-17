@@ -30,9 +30,17 @@ function Login() {
 
   const [vehicleNumber, setVehicleNumber] = useState("");
 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
+if (!isValidEmail(email)) {
+    toast.error("Please enter a valid email address.");
+    return;
+  }
     const roleToEndpoint = {
       User: "user",
       Doctor: "doctor",

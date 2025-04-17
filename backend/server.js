@@ -6,6 +6,8 @@ import connectCloudinary from './config/cloudinary.js'
 import doctorRouter from "./routes/doctorRoute.js";
 import userRouter from "./routes/userRoute.js";
 import ambulanceRouter from "./routes/ambulanceRoute.js";
+import verifyRoutes from "./routes/verifyRoutes.js";
+
 // App config
 const app = express();
 const port = process.env.PORT || 4000;
@@ -22,7 +24,7 @@ app.use(cors());
 app.use("/api/doctor", doctorRouter);
 app.use('/api/user',userRouter)//localhost:4000/api/user/login
 app.use("/api/ambulance", ambulanceRouter);
-
+app.use("/api", verifyRoutes);
 // Test route
 app.get("/", (req, res) => {
   res.send("✅ API is working");
