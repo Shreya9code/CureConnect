@@ -114,7 +114,7 @@ if (!isValidEmail(email)) {
         </h2>
 
         <div className="flex justify-center gap-4">
-          {["User", "Doctor", "AmbulanceDriver"].map((r) => (
+          {["Patient", "Doctor", "AmbulanceDriver"].map((r) => (
             <button
               key={r}
               className={`px-4 py-1 rounded ${
