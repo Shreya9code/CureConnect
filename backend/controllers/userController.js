@@ -246,11 +246,11 @@ const cancelAppointment=async (req,res) => {
   }
 }
 // Get all available ambulance drivers
-export const getAllAmbulanceDriversController = async (req, res) => {
+export const getAllAmbulanceDrivers= async (req, res) => {
   try {
     const drivers = await ambulanceDriverModel.find({ available: true });
     res.status(200).send({
-      success: true,
+      success: true,      message: "Ambulance drivers fetched successfully",
       data: drivers,
     });
   } catch (err) {

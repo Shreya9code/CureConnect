@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import OSMMap from "../components/OSMMap"; // Make sure this path is correct
+import React, { useState,useEffect } from "react";
+import OSMMap from "../components/OSMMap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
@@ -8,7 +8,25 @@ const BookAmbulance = () => {
   const [pickup, setPickup] = useState("");
   const [date, setDate] = useState(new Date()); // Initialize with current date and time
   const [time, setTime] = useState("");
+  const [drivers, setDrivers] = useState([]); // List of available drivers
+  const [selectedDriver, setSelectedDriver] = useState(""); // Selected driver ID
 
+// Fetch available drivers from the backend
+useEffect(() => {
+  const fetchDrivers = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/api/user/ambulance/drivers", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setDrivers(res.data.data);
+    } catch (err) {
+      console.error("Error fetching drivers", err);
+    }
+  };
+  fetchDrivers();
+}, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dateObj = new Date(date);
@@ -16,21 +34,22 @@ const BookAmbulance = () => {
     const timeString = dateObj.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
-    });
+    });// Formats to "HH:mm"
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/ambulance/book",
+        "http://localhost:4000/api/user/ambulance/book",
         {
           pickupLocation: pickup,
           date: dateString,
-          time: timeString,        },
+          time: timeString,
+          driverId: selectedDriver, // Include the selected driver
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-
       alert(res.data.message || "Ambulance booked successfully!");
     } catch (err) {
       console.error(err);
@@ -63,7 +82,22 @@ const BookAmbulance = () => {
             className="border p-2 rounded w-full"
           />
         </div>
-
+{/* Driver Selection */}
+<div>
+          <label className="block text-gray-700 mb-2">Select Ambulance Driver</label>
+          <select
+            value={selectedDriver}
+            onChange={(e) => setSelectedDriver(e.target.value)}
+            className="border p-2 rounded w-full"
+          >
+            <option value="">Select Driver</option>
+            {drivers.map((driver) => (
+              <option key={driver._id} value={driver._id}>
+                {driver.name} - {driver.vehicleNumber}
+              </option>
+            ))}
+          </select>
+        </div>
         {/* Submit Button */}
         <button
           type="submit"
