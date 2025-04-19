@@ -54,7 +54,7 @@ export const loginAmbulanceDriver = async (req, res) => {
   }
 };
 
-
+/*
 export const bookAmbulance = async (req, res) => {
   try {
     const userId = req.userId; // Get user ID from the token
@@ -141,3 +141,4 @@ export const cancelBooking = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+*/

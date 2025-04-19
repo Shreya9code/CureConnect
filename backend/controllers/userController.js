@@ -260,9 +260,9 @@ export const getAllAmbulanceDriversController = async (req, res) => {
 // 🟢 Book ambulance – only patients can book
 export const bookAmbulanceController = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.userId;
 
-    const user = await userModel.findById(userId);
+    const user = await userModel.findById(req.userId);
     if (!user) {
       return res.status(404).send({ success: false, message: "User not found" });
     }
