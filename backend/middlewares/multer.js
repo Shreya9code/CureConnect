@@ -1,11 +1,14 @@
-import multer from "multer";
+import multer from 'multer';
+import path from 'path';
 
+// Configure multer for image upload
 const storage = multer.diskStorage({
-    filename: function (req, file, callback) {
-        callback(null, file.originalname)
-    }
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Directory where images will be stored
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
+  },
 });
-//const storage = multer.memoryStorage(); // Use memory storage to directly upload to Cloudinary
 
-const upload = multer({storage });
-export  {upload};
+export const upload = multer({ storage: storage });

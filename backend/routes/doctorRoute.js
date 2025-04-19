@@ -8,16 +8,23 @@ import {
   appointmentCancel,
   doctorDashboard,
 } from '../controllers/doctorController.js';
-import authDoctor from '../middlewares/authDoctor.js';
+import { upload } from '../middlewares/multer.js';  // multer for image handling
 
 const doctorRouter = express.Router();
 
-doctorRouter.post('/signup', signupDoctor); 
+// Modify signup route to handle image upload
+doctorRouter.post(
+  '/signup',
+  upload.single('image'),  // Ensure multer handles the image
+  signupDoctor  // Pass to signupDoctor controller
+);
+
+// Other routes
 doctorRouter.post('/login', loginDoctor);
 doctorRouter.get('/list', doctorList);
-doctorRouter.get('/appointments', authDoctor, appointmentsDoctor);
-doctorRouter.post('/complete-appointments', authDoctor, appointmentComplete);
-doctorRouter.get('/cancel-appointment', authDoctor, appointmentCancel);
-doctorRouter.get('/dashboard', authDoctor, doctorDashboard);
+doctorRouter.get('/appointments', appointmentsDoctor);
+doctorRouter.post('/complete-appointments', appointmentComplete);
+doctorRouter.get('/cancel-appointment', appointmentCancel);
+doctorRouter.get('/dashboard', doctorDashboard);
 
 export default doctorRouter;
