@@ -1,4 +1,5 @@
 import AmbulanceDriver from "../models/ambulanceDriverModel.js";
+import AmbulanceBooking from "../models/ambulanceBooking.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
@@ -46,5 +47,19 @@ export const loginAmbulanceDriver = async (req, res) => {
     res.status(200).json({ token, user: driver });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const bookAmbulance = async (req, res) => {
+  try {
+    const { pickupLocation, dateTime } = req.body;
+    const userId = req.user._id; // assuming user is authenticated
+
+    const newBooking = new AmbulanceBooking({ pickupLocation, dateTime, userId });
+    await newBooking.save();
+
+    res.status(201).json({ message: "Ambulance booked successfully", booking: newBooking });
+  } catch (error) {
+    res.status(500).json({ error: "Booking failed", details: error.message });
   }
 };

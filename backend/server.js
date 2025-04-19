@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(cors());
 
 // Route middlewares
-app.use("/api/doctor", doctorRouter);
+app.use("/api/doctor", doctorRouter);//localhost:4000/api/doctor/signup
 app.use('/api/user', userRouter)  // localhost:4000/api/user/login
 app.use("/api/ambulance", ambulanceRouter);
 app.use("/api", verifyRoutes);
