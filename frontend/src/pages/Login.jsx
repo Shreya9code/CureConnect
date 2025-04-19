@@ -34,13 +34,13 @@ function Login() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-  
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-if (!isValidEmail(email)) {
-    toast.error("Please enter a valid email address.");
-    return;
-  }
+    if (!isValidEmail(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
     const roleToEndpoint = {
       User: "user",
       Doctor: "doctor",
@@ -71,7 +71,7 @@ if (!isValidEmail(email)) {
             phone,
             date,
           }
-        : role === "Ambulance"
+        : role === "AmbulanceDriver"
         ? {
             name,
             email,
@@ -96,7 +96,7 @@ if (!isValidEmail(email)) {
       toast.success(`${state} successful! Welcome ${user.name || "back"} 🎉`);
 
       if (role === "Doctor") navigate("/doctor");
-      else if (role === "AmbulanceDriver"|| role === "Ambulance") navigate("/ambulance");
+      else if (role === "AmbulanceDriver" || role === "Ambulance") navigate("/ambulance");
       else navigate("/patient");
     } catch (err) {
       console.error(err);
@@ -223,13 +223,13 @@ if (!isValidEmail(email)) {
                 className="w-full border p-2 rounded"
               />
               <input
-                type="text"
-                placeholder="Image URL"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files[0])}
                 required
                 className="w-full border p-2 rounded"
               />
+
               <input
                 type="date"
                 value={date}

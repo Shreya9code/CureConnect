@@ -19,6 +19,9 @@ import MentalHealth from "./pages/MentalHealth";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import HomePage from "./pages/HomePage";
 import { useLocation } from "react-router-dom";
+import AmbulanceDashboard from "./pages/AmbulanceDashboard";
+import BookAmbulance from "./pages/BookAmbulance";
+
 
 const App = () => {
   const navigate = useNavigate();
@@ -75,6 +78,8 @@ const App = () => {
         <Route path="/reminder" element={<MedicineReminder />} />
         <Route path="/mental-health" element={<MentalHealth />} />
         <Route path="/doctor" element={<DoctorDashboard />} />
+        <Route path="/ambulance" element={<AmbulanceDashboard />} />
+        <Route path="/patient/book-ambulance" element={<BookAmbulance />} />
       </Routes>
 
       <Footer />
