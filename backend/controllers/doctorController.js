@@ -9,8 +9,11 @@ import { v2 as cloudinary } from 'cloudinary';
 // Doctor Signup
 const signupDoctor = async (req, res) => {
   try {
-    const { name, email, password, speciality, degree, experience, about, fees, address, date, phone } = req.body;
-
+    const { name, email, password, speciality, degree, experience, about, fees, date, phone } = req.body;
+// ✅ Parse address if sent as stringified JSON
+const address = typeof req.body.address === 'string'
+? JSON.parse(req.body.address)
+: req.body.address;
     // Check if image is provided
     if (!req.file) {
       return res.status(400).json({ success: false, message: "Image is required" });

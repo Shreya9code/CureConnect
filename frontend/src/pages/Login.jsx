@@ -77,8 +77,11 @@ function Login() {
       formData.append("experience", experience);
       formData.append("about", about);
       formData.append("fees", fees);
-      formData.append("addressLine1", addressLine1);
-      formData.append("addressLine2", addressLine2);
+      const fullAddress = {
+        line1: addressLine1,
+        line2: addressLine2
+      };
+      formData.append("address", JSON.stringify(fullAddress));
       formData.append("phone", phone);
       formData.append("date", date);
     } else if (role === "AmbulanceDriver") {
@@ -119,8 +122,8 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-200 px-4">
-      <div className="w-full max-w-lg bg-white shadow-xl rounded-lg p-6 space-y-4">
+    <div className="min-h-screen flex justify-center items-center !bg-gray-200 px-4">
+      <div className="w-full max-w-lg !bg-white shadow-xl rounded-lg p-6 space-y-4">
         <h2 className="text-2xl font-bold text-center">
           {state === "Login" ? "Login" : "Register"} as {role}
         </h2>
@@ -130,7 +133,7 @@ function Login() {
             <button
               key={r}
               className={`px-4 py-1 rounded ${
-                role === r ? "bg-blue-600 text-white" : "bg-gray-200"
+                role === r ? "!bg-blue-600 text-white" : "!bg-gray-200"
               }`}
               onClick={() => setRole(r)}
             >
@@ -282,7 +285,7 @@ function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+            className="w-full !bg-blue-600 text-white p-2 rounded hover:!bg-blue-700"
           >
             {state === "Login" ? "Login" : "Register"}
           </button>
