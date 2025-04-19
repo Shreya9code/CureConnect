@@ -47,7 +47,6 @@ function Login() {
       toast.error("Please enter a valid email address.");
       return;
     }
-
     if (!isValidPassword(password)) {
       toast.error("Password must be at least 6 characters.");
       return;
@@ -62,58 +61,65 @@ function Login() {
     const baseURL = `http://localhost:4000/api/${roleToEndpoint[role]}`;
     const url = state === "Login" ? `${baseURL}/login` : `${baseURL}/signup`;
 
-    const formData = new FormData();
-
-    if (state === "Login") {
-      formData.append("email", email);
-      formData.append("password", password);
-    } else if (role === "Doctor") {
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("password", password);
-      if (image) formData.append("image", image);
-      formData.append("speciality", speciality);
-      formData.append("degree", degree);
-      formData.append("experience", experience);
-      formData.append("about", about);
-      formData.append("fees", fees);
-      const fullAddress = {
-        line1: addressLine1,
-        line2: addressLine2
-      };
-      formData.append("address", JSON.stringify(fullAddress));
-      formData.append("phone", phone);
-      formData.append("date", date);
-    } else if (role === "AmbulanceDriver") {
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("password", password);
-      formData.append("phone", phone);
-      formData.append("vehicleNumber", vehicleNumber);
-    }
-
     try {
-      const res = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Ensure correct content type for file upload
-        },
-      });
+      let res;
+  
+      if (state === "Login") {
+        // 🟢 LOGIN: Send JSON
+        const loginData = { email, password };
+        res = await axios.post(url, loginData);
+      } else {
+        // 🟢 SIGNUP: Use FormData for Doctor or Ambulance
+        const formData = new FormData();
+  
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("password", password);
+  
+        if (role === "Doctor") {
+          if (image) formData.append("image", image);
+          formData.append("speciality", speciality);
+          formData.append("degree", degree);
+          formData.append("experience", experience);
+          formData.append("about", about);
+          formData.append("fees", fees);
+          formData.append("phone", phone);
+          formData.append("date", date);
+          const fullAddress = {
+            line1: addressLine1,
+            line2: addressLine2,
+          };
+          formData.append("address", JSON.stringify(fullAddress));
+        }
+  
+        if (role === "AmbulanceDriver") {
+          formData.append("phone", phone);
+          formData.append("vehicleNumber", vehicleNumber);
+        }
+  
+        res = await axios.post(url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+  
       const token = res?.data?.token;
       const user = res?.data?.user || res?.data;
-
+  
       localStorage.setItem("token", token);
       localStorage.setItem("currentUser", JSON.stringify(user));
       localStorage.setItem("role", role.toLowerCase());
-
+  
       setToken(token);
       setUserData(user);
-
+  
       toast.success(`${state} successful! Welcome ${user.name || "back"} 🎉`);
-
+  
       if (role === "Doctor") navigate("/doctor");
       else if (role === "AmbulanceDriver") navigate("/ambulance");
       else navigate("/patient");
-    } catch (err) {
+  } catch (err) {
       console.error(err);
       toast.error(
         err.response?.data?.message || "Something went wrong. Try again."
