@@ -7,6 +7,8 @@ import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
 import { sendVerificationEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
+import ambulanceDriverModel from "../models/ambulanceDriverModel.js";
+import AmbulanceBooking from "../models/ambulanceBooking.js";
 // generate token
 const verificationToken = crypto.randomBytes(32).toString("hex");
 //api to register user
@@ -243,6 +245,53 @@ const cancelAppointment=async (req,res) => {
   
   }
 }
+// Get all available ambulance drivers
+export const getAllAmbulanceDriversController = async (req, res) => {
+  try {
+    const drivers = await ambulanceDriverModel.find({ available: true });
+    res.status(200).send({
+      success: true,
+      data: drivers,
+    });
+  } catch (err) {
+    res.status(500).send({ success: false, message: "Server error" });
+  }
+};
+// 🟢 Book ambulance – only patients can book
+export const bookAmbulanceController = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send({ success: false, message: "User not found" });
+    }
+
+    const { pickupLocation, date, time, driverId } = req.body;
+
+    const newBooking = new AmbulanceBooking({
+      user: userId,
+      pickupLocation,
+      date,
+      time,
+      driverId,
+    });
+
+    await newBooking.save();
+
+    res.status(201).send({
+      success: true,
+      message: "Ambulance booked successfully",
+      data: newBooking,
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
+  }
+};
 
 export {
   registerUser,

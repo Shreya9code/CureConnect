@@ -2,15 +2,42 @@ import React, { useState } from "react";
 import OSMMap from "../components/OSMMap"; // Make sure this path is correct
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
 
 const BookAmbulance = () => {
   const [pickup, setPickup] = useState("");
   const [date, setDate] = useState(new Date()); // Initialize with current date and time
   const [time, setTime] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Ambulance booked from ${pickup} on ${date.toLocaleDateString()} at ${time}`);
+    const dateObj = new Date(date);
+    const dateString = dateObj.toISOString().split("T")[0]; // "YYYY-MM-DD"
+    const timeString = dateObj.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/ambulance/book",
+        {
+          pickupLocation: pickup,
+          date: dateString,
+          time: timeString,        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      alert(res.data.message || "Ambulance booked successfully!");
+    } catch (err) {
+      console.error(err);
+      alert(
+        err?.response?.data?.message || "Booking failed. Please try again."
+      );
+    }
   };
 
   return (
