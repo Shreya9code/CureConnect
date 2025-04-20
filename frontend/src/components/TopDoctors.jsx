@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { doctors } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const TopDoctors = () => {
+  const [doctors, setDoctors] = useState([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/user/list"); // 🔁 Update this URL based on your actual backend route
+        if (res.data.success) {
+          setDoctors(res.data.doctors);
+        }
+      } catch (err) {
+        console.error("Failed to fetch doctors:", err);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
   return (
     <div className="flex flex-col items-center gap-4 py-16 text-gray-900 md:mx-10">
       <h1 className="text-3xl font-medium">Top Doctors to Book</h1>
