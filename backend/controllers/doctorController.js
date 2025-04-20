@@ -2,8 +2,6 @@ import doctorModel from "../models/doctorModel.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import appointmentModel from "../models/appointmentModel.js";
-
-// Cloudinary import
 import { v2 as cloudinary } from 'cloudinary';
 
 // Doctor Signup
@@ -80,6 +78,7 @@ const loginDoctor = async (req, res) => {
 
     // Create JWT token
     const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET);
+    console.log("Generated JWT Payload:", { id: doctor._id });
     res.json({ success: true, token });
   } catch (error) {
     console.error(error.stack);
@@ -122,13 +121,14 @@ const doctorList = async (req, res) => {
 // Get Appointments for a Doctor
 const appointmentsDoctor = async (req, res) => {
   try {
-    const { docId } = req.docId;
+    const docId = req.docId;
+    console.log("Fetching appointments for doctor:", req.docId);
 
     // Find appointments for the doctor
     const appointments = await appointmentModel.find({ docId });
     res.json({ success: true, appointments });
   } catch (error) {
-    console.error(error.stack);
+    console.error("Fetch Appointments Error:",error.stack);
     res.json({ success: false, message: error.message });
   }
 };
@@ -186,7 +186,7 @@ const appointmentCancel = async (req, res) => {
 // Doctor Dashboard Data
 const doctorDashboard = async (req, res) => {
   try {
-    const { docId } = req.docId;
+    const docId = req.docId;
 
     // Fetch appointments for the doctor
     const appointments = await appointmentModel.find({ docId });

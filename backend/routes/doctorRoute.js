@@ -9,6 +9,7 @@ import {
   doctorDashboard,
 } from '../controllers/doctorController.js';
 import { upload } from '../middlewares/multer.js';  // multer for image handling
+import authDoctor from '../middlewares/authDoctor.js'; // Doctor authentication middleware
 
 const doctorRouter = express.Router();
 
@@ -22,9 +23,9 @@ doctorRouter.post(
 // Other routes
 doctorRouter.post('/login', loginDoctor);
 doctorRouter.get('/list', doctorList);
-doctorRouter.get('/appointments', appointmentsDoctor);
+doctorRouter.get('/appointments',authDoctor, appointmentsDoctor);
 doctorRouter.post('/complete-appointments', appointmentComplete);
 doctorRouter.get('/cancel-appointment', appointmentCancel);
-doctorRouter.get('/dashboard', doctorDashboard);
+doctorRouter.get('/dashboard',authDoctor, doctorDashboard);
 
 export default doctorRouter;
