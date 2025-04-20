@@ -3,6 +3,7 @@ import OSMMap from "../components/OSMMap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const BookAmbulance = () => {
   const [pickup, setPickup] = useState("");
@@ -10,7 +11,8 @@ const BookAmbulance = () => {
   const [time, setTime] = useState("");
   const [drivers, setDrivers] = useState([]); // List of available drivers
   const [selectedDriver, setSelectedDriver] = useState(""); // Selected driver ID
-
+  const [bookingStatus, setBookingStatus] = useState(null); // To store and show booking status
+  const [error, setError] = useState(""); // To store any errors
 // Fetch available drivers from the backend
 useEffect(() => {
   const fetchDrivers = async () => {
@@ -50,12 +52,13 @@ useEffect(() => {
           },
         }
       );
-      alert(res.data.message || "Ambulance booked successfully!");
+      setBookingStatus(res.data.data.status);
+      toast.success(res.data.message || "Ambulance booked successfully!");
+      //alert(res.data.message || "Ambulance booked successfully!");
     } catch (err) {
       console.error(err);
-      alert(
-        err?.response?.data?.message || "Booking failed. Please try again."
-      );
+      setError(err?.response?.data?.message || "Booking failed. Please try again.");
+      toast.error(err?.response?.data?.message || "Booking failed. Please try again.");
     }
   };
 

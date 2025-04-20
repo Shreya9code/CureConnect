@@ -108,6 +108,24 @@ export const getPendingBookingsForDriver = async (req, res) => {
     res.status(500).send({ success: false, message: "Server error" });
   }
 };
+// Controller for fetching pending bookings
+export const getPendingBookingsController = async (req, res) => {
+  try {
+    const pendingBookings = await AmbulanceBooking.find({ status: "pending" });
+    res.status(200).send({
+      success: true,
+      message: "Pending bookings fetched successfully",
+      data: pendingBookings,
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: "Failed to fetch pending bookings",
+      error: err.message,
+    });
+  }
+};
+
 // 🚗 Driver accepts a booking
 export const acceptBookingController = async (req, res) => {
   try {
