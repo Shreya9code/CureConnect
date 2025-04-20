@@ -42,7 +42,7 @@ const Home = () => {
           </Link>
 
           <Link
-            to="/"
+            to="/patient/book-ambulance"
             className="p-4 !bg-red-500 text-white text-center rounded-lg shadow-md hover:!bg-red-600"
           >
             Ambulance Booking{" "}
