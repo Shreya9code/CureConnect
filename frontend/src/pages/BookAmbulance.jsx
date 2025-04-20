@@ -7,20 +7,24 @@ const BookAmbulance = () => {
   const [pickup, setPickup] = useState(null);
   const [destination, setDestination] = useState(null);
   const [routeInfo, setRouteInfo] = useState(null);
+  const [loading, setLoading] = useState(false); // to show a loading state while booking
 
+  // Booking handler when user clicks the 'Book Now' button
   const handleBooking = async () => {
     if (!pickup || !destination) {
       toast.error("Please select both pickup and destination");
       return;
     }
 
+    setLoading(true); // Set loading to true while waiting for the response
+
     try {
       const res = await axios.post(
         "http://localhost:4000/api/user/ambulance/book",
         {
-          pickup,
-          destination,
-          time: new Date().toISOString(), // real-time booking
+          pickupLocation: pickup, // Use pickup location
+          destination: destination, // Use destination (if applicable)
+          time: new Date().toISOString(), // Send the current time for the booking
         },
         {
           headers: {
@@ -30,13 +34,16 @@ const BookAmbulance = () => {
       );
 
       toast.success(res.data.message || "Booking request sent to drivers");
+      setLoading(false); // Reset loading state
 
-      // Simulate driver accepting after a delay (replace with socket/polling)
+      // Optionally, handle a response that confirms the booking, show status
       setTimeout(() => {
-        toast.success("✅ Driver accepted the request!");
+        toast.success("✅ Driver accepted the request!"); // Simulate driver acceptance after 5 seconds (for now)
       }, 5000);
+
     } catch (err) {
       toast.error(err.response?.data?.message || "Booking failed");
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -51,8 +58,9 @@ const BookAmbulance = () => {
       <button
         onClick={handleBooking}
         className="mt-4 !bg-blue-600 text-white p-2 rounded hover:!bg-blue-700"
+        disabled={loading} // Disable button when booking is in progress
       >
-        Book Now
+        {loading ? "Booking..." : "Book Now"}
       </button>
     </div>
   );
