@@ -35,6 +35,6 @@ userRouter.get('/list', doctorList);
 userRouter.post("/book-appointment", authUser, bookAppointment);
 userRouter.get("/appointments", authUser, listAppointment);
 userRouter.post("/cancel-appointment", authUser, cancelAppointment);
-userRouter.post("/ambulance/book", authUser, bookAmbulanceController);
+userRouter.post("/ambulance/book",authUser, bookAmbulanceController);
 userRouter.get("/ambulance/drivers", authUser, getAllAmbulanceDrivers);
 export default userRouter;

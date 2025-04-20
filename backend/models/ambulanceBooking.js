@@ -22,7 +22,7 @@ const ambulanceBookingSchema = new mongoose.Schema(
     driverId: { // Add a reference to the ambulance driver
       type: mongoose.Schema.Types.ObjectId,
       ref: "ambulanceDriver",
-      required: true,
+      required: false,
     },
     status: { // Track the status of the booking
       type: String,

@@ -267,21 +267,22 @@ export const bookAmbulanceController = async (req, res) => {
       return res.status(404).send({ success: false, message: "User not found" });
     }
 
-    const { pickupLocation, date, time, driverId } = req.body;
+    const { pickupLocation, date, time, /*driverId*/ } = req.body;
 
     const newBooking = new AmbulanceBooking({
       user: userId,
       pickupLocation,
       date,
       time,
-      driverId,
+      status: "pending", // Set the status to pending
+      /*driverId,*/
     });
 
     await newBooking.save();
 
     res.status(201).send({
       success: true,
-      message: "Ambulance booked successfully",
+      message: "Ambulance booked successfully. Awaiting driver confirmation.",
       data: newBooking,
     });
   } catch (err) {

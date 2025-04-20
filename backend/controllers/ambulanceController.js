@@ -53,57 +53,57 @@ export const loginAmbulanceDriver = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-/*
-export const bookAmbulance = async (req, res) => {
+// 🚗 Driver accepts a booking
+export const acceptBookingController = async (req, res) => {
   try {
-    const userId = req.userId; // Get user ID from the token
-    const user = await userModel.findById(userId); // Fetch the user
+    const { bookingId } = req.params;
+    const { driverId } = req.body;
 
-    if (!user || user.userType !== 'patient') {
-      return res.status(403).json({ success: false, message: "Only patients can book ambulances" });
+    const booking = await AmbulanceBooking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).send({ success: false, message: "Booking not found" });
     }
 
-    const { pickupLocation, date, time, driverId } = req.body; // Get booking details
+    // Only update if the booking is pending
+    if (booking.status !== "pending") {
+      return res.status(400).send({ success: false, message: "This booking cannot be accepted" });
+    }
 
-    // Check if the driver is available
+    // Update the booking with the driver's details
+    booking.status = "assigned";
+    booking.driverId = driverId;
+
+    await booking.save();
+
+    // Find the driver and notify the patient
     const driver = await ambulanceDriverModel.findById(driverId);
-
     if (!driver) {
-      return res.status(404).json({ success: false, message: "Driver not found" });
+      return res.status(404).send({ success: false, message: "Driver not found" });
     }
 
-    if (!driver.available) {
-      return res.status(400).json({ success: false, message: "Driver is not available" });
+    // You can add logic here to notify the patient via email/SMS
+    const patient = await userModel.findById(booking.user);
+    if (patient) {
+      // Send notification to patient (you can use email/SMS for real-world apps)
+      // Example: Send an email/SMS with driver details (phone number, vehicle number)
+      console.log(`Notification sent to patient: Driver Details: ${driver.name}, Phone: ${driver.phone}, Vehicle: ${driver.vehicleNumber}`);
     }
 
-    // Create the ambulance booking
-    const newBooking = new ambulanceBooking({
-      user: userId,
-      pickupLocation,
-      date,
-      time,
-      driver: driverId,
-      status: 'assigned', // Mark as assigned once the driver is selected
-    });
-
-    const booking = await newBooking.save();
-
-    // Update driver availability and associate the booking
-    driver.available = false; // Driver is now booked
-    driver.bookings.push(booking._id); // Link the booking to the driver
-    await driver.save();
-
-    res.status(201).json({
+    res.status(200).send({
       success: true,
-      message: "Ambulance booked successfully",
-      booking,
+      message: "Booking accepted by driver. Patient notified with driver's details.",
+      data: booking,
     });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
+
+/*
 export const cancelBooking = async (req, res) => {
   try {
     const { bookingId } = req.body;
@@ -142,3 +142,19 @@ export const cancelBooking = async (req, res) => {
   }
 };
 */
+// 🚗 Get all pending bookings for a driver
+export const getPendingBookingsForDriver = async (req, res) => {
+  try {
+    const driverId = req.userId; // Assuming driver's ID is in the request
+
+    const bookings = await AmbulanceBooking.find({ driverId: null, status: "pending" });
+
+    res.status(200).send({
+      success: true,
+      message: "Pending bookings fetched successfully",
+      data: bookings,
+    });
+  } catch (err) {
+    res.status(500).send({ success: false, message: "Server error" });
+  }
+};
