@@ -93,7 +93,7 @@ const FullMap = ({ setPickup, setDestination, setRouteInfo }) => {
         />
         <button
           onClick={handleSearch}
-          className="bg-blue-600 text-white px-4 rounded"
+          className="!bg-blue-600 text-white px-4 rounded"
         >
           Search
         </button>

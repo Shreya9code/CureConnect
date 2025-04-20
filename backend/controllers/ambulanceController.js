@@ -53,62 +53,7 @@ export const loginAmbulanceDriver = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-/*
-export const cancelBooking = async (req, res) => {
-  try {
-    const { bookingId } = req.body;
-
-    // Find the booking
-    const booking = await ambulanceBookingModel.findById(bookingId).populate('driver');
-
-    if (!booking) {
-      return res.status(404).json({ success: false, message: "Booking not found" });
-    }
-
-    // Check if the user is the one who made the booking
-    if (booking.user.toString() !== req.userId.toString()) {
-      return res.status(403).json({ success: false, message: "You can only cancel your own booking" });
-    }
-
-    // Update the booking status to canceled
-    booking.status = 'canceled';
-    await booking.save();
-
-    // Make the driver available again
-    const driver = booking.driver;
-    driver.available = true;
-    driver.bookings = driver.bookings.filter(
-      (bookingId) => bookingId.toString() !== bookingId
-    );
-    await driver.save();
-
-    res.status(200).json({
-      success: true,
-      message: "Booking canceled successfully",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-*/
-// 🚗 Get all pending bookings for a driver
-export const getPendingBookingsForDriver = async (req, res) => {
-  try {
-    const driverId = req.user._id; // Assuming driver's ID is in the request
-
-    const bookings = await AmbulanceBooking.find({ driverId: null, status: "pending" });
-
-    res.status(200).send({
-      success: true,
-      message: "Pending bookings fetched successfully",
-      data: bookings,
-    });
-  } catch (err) {
-    res.status(500).send({ success: false, message: "Server error" });
-  }
-};
-// Controller for fetching pending bookings
+/*// Controller for fetching pending bookings
 export const getPendingBookingsController = async (req, res) => {
   try {
     const pendingBookings = await AmbulanceBooking.find({ status: "pending" });
@@ -124,16 +69,30 @@ export const getPendingBookingsController = async (req, res) => {
       error: err.message,
     });
   }
-};
+};*/
+// 🚗 Get all pending bookings for a driver
+export const getPendingBookingsForDriver = async (req, res) => {
+  try {
+    const driverId = req.user._id; // Assuming driver's ID is in the request
 
+    const bookings = await AmbulanceBooking.find({ driverId: null, status: "pending" })//.populate("User", "name");
+
+    res.status(200).send({
+      success: true,
+      message: "Pending bookings fetched successfully",
+      data: bookings,
+    });
+  } catch (err) {
+    res.status(500).send({ success: false, message: "Server error" });
+  }
+};
 // 🚗 Driver accepts a booking
 export const acceptBookingController = async (req, res) => {
   try {
     const { bookingId } = req.params;
     const driverId  = req.user._id;
     console.log("Driver from auth middleware in ambController:", req.user);
-
-    const booking = await AmbulanceBooking.findById(bookingId);
+    /*const booking = await AmbulanceBooking.findById(bookingId);
     if (!booking) {
       return res.status(404).send({ success: false, message: "Booking not found" });
     }
@@ -147,8 +106,17 @@ export const acceptBookingController = async (req, res) => {
     // Update the booking with the driver's details
     booking.status = "assigned";
     booking.driverId = driverId;
-    await booking.save();
-
+    await booking.save();*/
+    const booking = await AmbulanceBooking.findOneAndUpdate(
+      { _id: bookingId, status: "pending" },
+      { $set: { status: "assigned", driverId } },
+      { new: true }
+    );
+    
+    if (!booking) {
+      return res.status(400).send({ success: false, message: "Booking already accepted or not found." });
+    }
+    
     // Find the driver and notify the patient
     const driver = await ambulanceDriverModel.findById(driverId);
     if (!driver) {
@@ -174,5 +142,13 @@ export const acceptBookingController = async (req, res) => {
       message: "Server error",
       error: err.message,
     });
+  }
+};
+export const getDriverBookings = async (req, res) => {
+  try {    const driverId = req.user._id; // Assuming driver's ID is in the request
+    const bookings = await AmbulanceBooking.find({ driverId:null});
+    res.status(200).send({ success: true, data: bookings });
+  } catch (err) {
+    res.status(500).send({ success: false, message: "Server error" });
   }
 };

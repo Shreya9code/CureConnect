@@ -50,7 +50,7 @@ const BookAmbulance = () => {
       />
       <button
         onClick={handleBooking}
-        className="mt-4 bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+        className="mt-4 !bg-blue-600 text-white p-2 rounded hover:!bg-blue-700"
       >
         Book Now
       </button>

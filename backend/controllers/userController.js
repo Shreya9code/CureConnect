@@ -293,6 +293,19 @@ export const bookAmbulanceController = async (req, res) => {
     });
   }
 };
+// 🧍‍♂️ Patient fetches their bookings
+export const getMyAmbulanceBookings = async (req, res) => {
+  try {
+    const bookings = await AmbulanceBooking.find({ user: req.userId }).populate('driverId', 'name phone vehicleNumber');
+    res.status(200).send({
+      success: true,
+      message: "Your ambulance bookings",
+      data: bookings,
+    });
+  } catch (err) {
+    res.status(500).send({ success: false, message: "Server error", error: err.message });
+  }
+};
 
 export {
   registerUser,
