@@ -53,56 +53,6 @@ export const loginAmbulanceDriver = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-// 🚗 Driver accepts a booking
-export const acceptBookingController = async (req, res) => {
-  try {
-    const { bookingId } = req.params;
-    const { driverId } = req.body;
-
-    const booking = await AmbulanceBooking.findById(bookingId);
-    if (!booking) {
-      return res.status(404).send({ success: false, message: "Booking not found" });
-    }
-
-    // Only update if the booking is pending
-    if (booking.status !== "pending") {
-      return res.status(400).send({ success: false, message: "This booking cannot be accepted" });
-    }
-
-    // Update the booking with the driver's details
-    booking.status = "assigned";
-    booking.driverId = driverId;
-
-    await booking.save();
-
-    // Find the driver and notify the patient
-    const driver = await ambulanceDriverModel.findById(driverId);
-    if (!driver) {
-      return res.status(404).send({ success: false, message: "Driver not found" });
-    }
-
-    // You can add logic here to notify the patient via email/SMS
-    const patient = await userModel.findById(booking.user);
-    if (patient) {
-      // Send notification to patient (you can use email/SMS for real-world apps)
-      // Example: Send an email/SMS with driver details (phone number, vehicle number)
-      console.log(`Notification sent to patient: Driver Details: ${driver.name}, Phone: ${driver.phone}, Vehicle: ${driver.vehicleNumber}`);
-    }
-
-    res.status(200).send({
-      success: true,
-      message: "Booking accepted by driver. Patient notified with driver's details.",
-      data: booking,
-    });
-  } catch (err) {
-    res.status(500).send({
-      success: false,
-      message: "Server error",
-      error: err.message,
-    });
-  }
-};
-
 /*
 export const cancelBooking = async (req, res) => {
   try {
@@ -145,7 +95,7 @@ export const cancelBooking = async (req, res) => {
 // 🚗 Get all pending bookings for a driver
 export const getPendingBookingsForDriver = async (req, res) => {
   try {
-    const driverId = req.userId; // Assuming driver's ID is in the request
+    const driverId = req.user._id; // Assuming driver's ID is in the request
 
     const bookings = await AmbulanceBooking.find({ driverId: null, status: "pending" });
 
@@ -156,5 +106,55 @@ export const getPendingBookingsForDriver = async (req, res) => {
     });
   } catch (err) {
     res.status(500).send({ success: false, message: "Server error" });
+  }
+};
+// 🚗 Driver accepts a booking
+export const acceptBookingController = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const driverId  = req.user._id;
+    console.log("Driver from auth middleware in ambController:", req.user);
+
+    const booking = await AmbulanceBooking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).send({ success: false, message: "Booking not found" });
+    }
+    console.log("Booking status:", booking.status);
+
+    // Only update if the booking is pending
+    if (booking.status !== "pending") {
+      return res.status(400).send({ success: false, message: "This booking cannot be accepted" });
+    }
+
+    // Update the booking with the driver's details
+    booking.status = "assigned";
+    booking.driverId = driverId;
+    await booking.save();
+
+    // Find the driver and notify the patient
+    const driver = await ambulanceDriverModel.findById(driverId);
+    if (!driver) {
+      return res.status(404).send({ success: false, message: "Driver not found" });
+    }
+
+    // You can add logic here to notify the patient via email/SMS
+    const patient = await userModel.findById(booking.user);
+    if (patient) {
+      // Send notification to patient (you can use email/SMS for real-world apps)
+      // Example: Send an email/SMS with driver details (phone number, vehicle number)
+      console.log(`✅Notification sent to patient:(${patient.email}): 🚑 Driver Details: ${driver.name}, 📞Phone: ${driver.phone},🚘Vehicle: ${driver.vehicleNumber}`);
+    }
+
+    res.status(200).send({
+      success: true,
+      message: "Booking accepted by driver. Patient notified with driver's details.",
+      data: booking,
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
