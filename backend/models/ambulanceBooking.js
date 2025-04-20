@@ -27,7 +27,7 @@ const ambulanceBookingSchema = new mongoose.Schema(
     status: { // Track the status of the booking
       type: String,
       default: "pending", // or "assigned", "completed"
-      enum: ["pending", "assigned", "completed", "canceled"],
+      enum: ["pending", "assigned", "completed"],
     },
   },
   { timestamps: true }

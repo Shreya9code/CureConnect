@@ -1,5 +1,4 @@
 import AmbulanceDriver from "../models/ambulanceDriverModel.js";
-import User from "../models/userModel.js"
 import AmbulanceBooking from "../models/ambulanceBooking.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -75,7 +74,7 @@ export const getPendingBookingsForDriver = async (req, res) => {
   try {
     const driverId = req.user._id; // Assuming driver's ID is in the request
 
-    const bookings = await AmbulanceBooking.find({ driverId: null, status: "pending" })//.populate("User", "name");
+    const bookings = await AmbulanceBooking.find({ driverId: null, status: "pending" })//.populate("user", "name email");
 
     res.status(200).send({
       success: true,
@@ -83,6 +82,7 @@ export const getPendingBookingsForDriver = async (req, res) => {
       data: bookings,
     });
   } catch (err) {
+    console.error("Error fetching pending bookings:", err); // 👈 log the exact error
     res.status(500).send({ success: false, message: "Server error" });
   }
 };
@@ -92,21 +92,6 @@ export const acceptBookingController = async (req, res) => {
     const { bookingId } = req.params;
     const driverId  = req.user._id;
     console.log("Driver from auth middleware in ambController:", req.user);
-    /*const booking = await AmbulanceBooking.findById(bookingId);
-    if (!booking) {
-      return res.status(404).send({ success: false, message: "Booking not found" });
-    }
-    console.log("Booking status:", booking.status);
-
-    // Only update if the booking is pending
-    if (booking.status !== "pending") {
-      return res.status(400).send({ success: false, message: "This booking cannot be accepted" });
-    }
-
-    // Update the booking with the driver's details
-    booking.status = "assigned";
-    booking.driverId = driverId;
-    await booking.save();*/
     const booking = await AmbulanceBooking.findOneAndUpdate(
       { _id: bookingId, status: "pending" },
       { $set: { status: "assigned", driverId } },
@@ -146,9 +131,34 @@ export const acceptBookingController = async (req, res) => {
 };
 export const getDriverBookings = async (req, res) => {
   try {    const driverId = req.user._id; // Assuming driver's ID is in the request
-    const bookings = await AmbulanceBooking.find({ driverId:null});
+    const bookings = await AmbulanceBooking.find({ driverId:driverId});
     res.status(200).send({ success: true, data: bookings });
   } catch (err) {
     res.status(500).send({ success: false, message: "Server error" });
+  }
+};
+
+export const getAcceptedBookings = async (req, res) => {
+  try {
+    const driverId = req.user._id;
+
+    const bookings = await AmbulanceBooking.find({
+      status: "assigned",
+      driverId: driverId,
+    })
+    .populate({ path: "user", model: "user", select: "name email" })
+    .populate("driverId", "name phone vehicleNumber")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+  } catch (error) {
+    console.error("Error fetching accepted bookings:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch accepted bookings",
+    });
   }
 };
