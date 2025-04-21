@@ -80,7 +80,7 @@ const Appointment = () => {
   }
   const slotDate = selectedSlot.toISOString().split("T")[0]; // "YYYY-MM-DD"
     try {
-      const res = await axios.post("http://localhost:4000/api/user/book-appointment", {
+      const res = await axios.post("https://cureconnect-backend-90kf.onrender.com/api/user/book-appointment", {
         docId,
         slotDate,
         slotTime,

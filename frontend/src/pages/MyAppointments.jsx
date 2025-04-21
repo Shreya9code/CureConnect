@@ -40,7 +40,7 @@ const MyAppointments = () => {
       return;
     }
     try {
-      const res = await axios.get("http://localhost:4000/api/user/appointments", {
+      const res = await axios.get("https://cureconnect-backend-90kf.onrender.com/api/user/appointments", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,7 +56,7 @@ const MyAppointments = () => {
     const token = localStorage.getItem("token");
     try {
       await axios.patch(
-        `http://localhost:4000/api/user/cancel-appointment/${appointmentId}`,
+        `https://cureconnect-backend-90kf.onrender.com/api/user/cancel-appointment/${appointmentId}`,
         {},
         {
           headers: {

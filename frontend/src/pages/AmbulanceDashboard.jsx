@@ -18,11 +18,13 @@ const AmbulanceDashboard = () => {
       }
       setIsLoggedIn(true); // User is logged in
 
-      const [pendingRes, acceptedRes] = await Promise.all([
-        axios.get("http://localhost:4000/api/ambulance/pending-bookings", {
+      const [pendingRes, acceptedRes] = await Promise.all([//https://cureconnect-backend-90kf.onrender.com
+        axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/pending-bookings", {
+        //axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/pending-bookings", {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:4000/api/ambulance/accepted-bookings", {
+        axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/accepted-bookings", {
+        //axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/accepted-bookings", {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -44,7 +46,7 @@ const AmbulanceDashboard = () => {
   const handleAccept = async (bookingId) => {
     try {
       const res = await axios.post(
-        `http://localhost:4000/api/ambulance/accept-booking/${bookingId}`,
+        `https://cureconnect-backend-90kf.onrender.com/api/ambulance/accept-booking/${bookingId}`,
         {},
         {
           headers: {

@@ -15,7 +15,7 @@ const BookAmbulance = () => {
   const checkBookingStatus = async (bookingId) => {
     try {
       const res = await axios.get(
-        `http://localhost:4000/api/user/ambulance/status/${bookingId}`,
+        `https://cureconnect-backend-90kf.onrender.com/api/user/ambulance/status/${bookingId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -46,7 +46,7 @@ const BookAmbulance = () => {
     setLoading(true); // Set loading to true while waiting for the response
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/user/ambulance/book",
+        "https://cureconnect-backend-90kf.onrender.com/api/user/ambulance/book",
         {
           pickupLocation: pickup, // Use pickup location
           destination: destination, // Use destination (if applicable)
@@ -76,7 +76,7 @@ const BookAmbulance = () => {
  // 🧠 Fetch all previous bookings
  const fetchMyBookings = async () => {
   try {
-    const res = await axios.get("http://localhost:4000/api/user/ambulance/my-bookings", {
+    const res = await axios.get("https://cureconnect-backend-90kf.onrender.com/api/user/ambulance/my-bookings", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

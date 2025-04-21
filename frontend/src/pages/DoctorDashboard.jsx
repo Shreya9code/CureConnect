@@ -19,7 +19,7 @@ export default function DoctorDashboard() {
     const fetchAppointments = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:4000/api/doctor/dashboard",
+          "https://cureconnect-backend-90kf.onrender.com/api/doctor/dashboard",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ export default function DoctorDashboard() {
   const cancelAppointment = async (docId, appointmentId) => {
     try {
       await axios.post(
-        "http://localhost:4000/api/doctor/cancel-appointment",
+        "https://cureconnect-backend-90kf.onrender.com/api/doctor/cancel-appointment",
         { docId, appointmentId },
         {
           headers: {

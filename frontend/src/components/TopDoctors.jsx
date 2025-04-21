@@ -10,7 +10,7 @@ const TopDoctors = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/user/list"); // 🔁 Update this URL based on your actual backend route
+        const res = await axios.get("https://cureconnect-backend-90kf.onrender.com/api/user/list"); // 🔁 Update this URL based on your actual backend route
         if (res.data.success) {
           setDoctors(res.data.doctors);
         }

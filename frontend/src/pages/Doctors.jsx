@@ -13,7 +13,7 @@ const Doctors = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/doctor/list");
+        const res = await axios.get("https://cureconnect-backend-90kf.onrender.com/api/doctor/list");
         setDoctors(res.data.doctors || []);
       } catch (error) {
         console.error("Error fetching doctors:", error);

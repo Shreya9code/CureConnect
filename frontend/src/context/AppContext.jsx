@@ -15,7 +15,7 @@ const AppContextProvider = (props) => {
   // Load doctors from local dummy data (offline mode)
   const getDoctorsData = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/doctor/list");
+      const res = await fetch("https://cureconnect-backend-90kf.onrender.com/api/doctor/list");
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to fetch doctors");
       setDoctors(data.doctors); // Make sure your backend sends an array under `doctors`
