@@ -203,13 +203,13 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border p-2 rounded"
             />
-            <button
+            {/* <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-2 top-2 text-blue-600"
             >
               {showPassword ? "Hide" : "Show"}
-            </button>
+            </button> */}
           </div>
 
           {/* Doctor-specific fields */}
