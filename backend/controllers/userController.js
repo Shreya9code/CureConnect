@@ -10,12 +10,51 @@ import crypto from "crypto";
 import ambulanceDriverModel from "../models/ambulanceDriverModel.js";
 import AmbulanceBooking from "../models/ambulanceBooking.js";
 // generate token
-const verificationToken = crypto.randomBytes(32).toString("hex");
-//api to register user
+//const verificationToken = crypto.randomBytes(32).toString("hex");
+//api to register user 
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const cleanName = name?.constructor === Object ? Object.values(name)[0] : name;
+    const cleanEmail = email?.constructor === Object ? Object.values(email)[0] : email;
+    const cleanPassword = password?.constructor === Object ? Object.values(password)[0] : password;
+
+    if (!cleanName || !cleanEmail || !cleanPassword) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Please enter all fields" 
+      });
+    }if (!validator.isEmail(cleanEmail)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Please enter valid email address" 
+      });
+    }
+
+    if (cleanPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters",
+      });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(cleanPassword, salt);
+    const userData = {
+      name: cleanName,
+      email: cleanEmail,
+      password: hashedPassword,
+      emailToken: crypto.randomBytes(32).toString("hex"),
+      isVerified: false
+    };
+    const newUser = new userModel(userData);
+    const user = await newUser.save();
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    /*if (!name || !email || !password) {
       return res
         .status(400)
         .json({ success: false, message: "Please enter all fields" });
@@ -38,22 +77,24 @@ const registerUser = async (req, res) => {
     const userData = {
       name,
       email,
-      password: hashedPassword,emailToken: verificationToken,
+      password: hashedPassword,
+      emailToken: verificationToken,
       isVerified: false
     };
     //save user to database
     const newUser = new userModel(userData);
     const user = await newUser.save();
-    await sendVerificationEmail(email, verificationToken);
+    //await sendVerificationEmail(email, verificationToken);
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
-    });
+    });*/
     console.log("Generated Token:", token);
     return res
       .status(201)
-      .json({ success: true, message: "User registered successfully.pls verify email", token });
+      .json({ success: true, message: "User registered successfully!", token,user });
   } catch (error) {
+    console.error("Registration error:", error);
     return res.status(500).json({ message: error.message });
   }
 };

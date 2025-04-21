@@ -9,13 +9,13 @@ function Login() {
   const { setToken, setUserData } = useContext(AppContext);
 
   const [state, setState] = useState("Login"); // "Login" or "Sign Up"
-  const [role, setRole] = useState("User");
+  const [role, setRole] = useState("User"); // "User", "Doctor", or "AmbulanceDriver"
 
   // Common fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // For password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   // Doctor-specific fields
   const [image, setImage] = useState(null);
@@ -29,6 +29,7 @@ function Login() {
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
+  // Ambulance-specific fields
   const [vehicleNumber, setVehicleNumber] = useState("");
 
   const isValidEmail = (email) => {
@@ -63,66 +64,90 @@ function Login() {
 
     try {
       let res;
-  
-      if (state === "Login") {
-        // 🟢 LOGIN: Send JSON
-        const loginData = { email, password };
-        res = await axios.post(url, loginData);
-      } else {
-        // 🟢 SIGNUP: Use FormData for Doctor or Ambulance
-        const formData = new FormData();
-  
-        formData.append("name", name);
-        formData.append("email", email);
-        formData.append("password", password);
-  
-        if (role === "Doctor") {
-          if (image) formData.append("image", image);
+
+    if (state === "Login") {
+      // Login for all roles
+      res = await axios.post(url, { email, password });
+    } else {
+      // Signup handling
+      switch (role) {
+        case "User":
+          // User signup - simple JSON
+          res = await axios.post(url, { name, email, password }, {
+            headers: { "Content-Type": "application/json" }
+          });
+          break;
+          case "Doctor":
+          // Doctor signup - FormData with image
+          const formData = new FormData();
+          formData.append("name", name);
+          formData.append("email", email);
+          formData.append("password", password);
           formData.append("speciality", speciality);
           formData.append("degree", degree);
           formData.append("experience", experience);
           formData.append("about", about);
           formData.append("fees", fees);
           formData.append("phone", phone);
+          formData.append("addressLine1", addressLine1);
+          formData.append("addressLine2", addressLine2);
           formData.append("date", date);
-          const fullAddress = {
-            line1: addressLine1,
-            line2: addressLine2,
-          };
-          formData.append("address", JSON.stringify(fullAddress));
+          if (image) formData.append("image", image);
+
+          res = await axios.post(url, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+          });
+          break;
+          case "AmbulanceDriver":
+          // Ambulance signup - simple JSON
+          res = await axios.post(url, {
+            name,
+            email,
+            password,
+            phone,
+            vehicleNumber
+          }, {
+            headers: { "Content-Type": "application/json" }
+          });
+          break;
+          default:
+            throw new Error("Invalid role selected");
         }
-  
-        if (role === "AmbulanceDriver") {
-          formData.append("phone", phone);
-          formData.append("vehicleNumber", vehicleNumber);
-        }
-  
-        res = await axios.post(url, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
       }
-  
-      const token = res?.data?.token;
-      const user = res?.data?.user || res?.data;
-  
-      localStorage.setItem("token", token);
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      localStorage.setItem("role", role.toLowerCase());
-  
-      setToken(token);
-      setUserData(user);
-  
-      toast.success(`${state} successful! Welcome ${user.name || "back"} 🎉`);
-  
-      if (role === "Doctor") navigate("/doctor");
-      else if (role === "AmbulanceDriver") navigate("/ambulance");
-      else navigate("/patient");
-  } catch (err) {
-      console.error(err);
+      // Handle response
+    const token = res?.data?.token;
+    const user = res?.data?.user || res?.data?.doctor || res?.data?.driver;
+
+    if (!token || !user) {
+      throw new Error("Authentication failed - no token/user received");
+    }
+
+    // Store auth data
+    localStorage.setItem("token", token);
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    localStorage.setItem("role", role.toLowerCase());
+
+    // Update context
+    setToken(token);
+    setUserData(user);
+    // Show success and redirect
+    toast.success(`${state} successful! Welcome ${user.name} 🎉`);
+    
+    switch (role) {
+      case "Doctor":
+        navigate("/doctor");
+        break;
+      case "AmbulanceDriver":
+        navigate("/ambulance");
+        break;
+      default:
+        navigate("/patient");}
+    } catch (err) {
+      console.error("Auth error:", err);
       toast.error(
-        err.response?.data?.message || "Something went wrong. Try again."
+        err.response?.data?.message || 
+        err.message || 
+        "Something went wrong. Try again."
       );
     }
   };
@@ -168,6 +193,7 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border p-2 rounded"
           />
+
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -249,16 +275,15 @@ function Login() {
                 placeholder="Address Line 2"
                 value={addressLine2}
                 onChange={(e) => setAddressLine2(e.target.value)}
-                required
                 className="w-full border p-2 rounded"
               />
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => setImage(e.target.files[0])}
+                required
                 className="w-full border p-2 rounded"
               />
-
               <input
                 type="date"
                 value={date}
@@ -268,6 +293,7 @@ function Login() {
             </>
           )}
 
+          {/* Ambulance-specific fields */}
           {state === "Sign Up" && role === "AmbulanceDriver" && (
             <>
               <input

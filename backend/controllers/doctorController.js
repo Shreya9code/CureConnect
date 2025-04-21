@@ -1,61 +1,103 @@
 import doctorModel from "../models/doctorModel.js";
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import appointmentModel from "../models/appointmentModel.js";
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
 // Doctor Signup
 const signupDoctor = async (req, res) => {
   try {
-    const { name, email, password, speciality, degree, experience, about, fees, date, phone } = req.body;
-// ✅ Parse address if sent as stringified JSON
-const address = typeof req.body.address === 'string'
-? JSON.parse(req.body.address)
-: req.body.address;
-    // Check if image is provided
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: "Image is required" });
+    // Parse form data
+    const { 
+      name, 
+      email, 
+      password, 
+      speciality, 
+      degree, 
+      experience, 
+      about, 
+      fees, 
+      phone,
+      date,
+      addressLine1,
+      addressLine2
+    } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !password || !speciality || !degree || !phone) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Required fields are missing" 
+      });
     }
 
-    // Upload image to Cloudinary
-    const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path);
+    // Check if image is provided
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Doctor image is required" 
+      });
+    }
 
     // Check if doctor already exists
     const existingDoctor = await doctorModel.findOne({ email });
     if (existingDoctor) {
-      return res.status(400).json({ success: false, message: "Doctor already exists" });
+      return res.status(400).json({ 
+        success: false, 
+        message: "Doctor already exists with this email" 
+      });
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new doctor
+    // Upload image to Cloudinary
+    const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path);
+
+    // Create address object
+    const address = {
+      line1: addressLine1,
+      line2: addressLine2 || ""
+    };
+
+    // Create new doctor
     const newDoctor = new doctorModel({
       name,
       email,
       password: hashedPassword,
-      image: cloudinaryResponse.secure_url, // Use only secure_url for the image
+      image: cloudinaryResponse.secure_url,
       speciality,
       degree,
       experience,
       about,
       fees,
       address,
-      date,
-      phone,
+      date: date || new Date(),
+      phone
     });
 
-    // Save the doctor to the database
+    // Save to database
     await newDoctor.save();
 
-    // Create JWT token
-    const token = jwt.sign({ id: newDoctor._id }, process.env.JWT_SECRET);
+    // Create token
+    const token = jwt.sign({ id: newDoctor._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d"
+    });
 
-    // Send success response
-    res.status(201).json({ success: true, token });
+    // Return success response with doctor data
+    res.status(201).json({ 
+      success: true, 
+      message: "Doctor registered successfully",
+      token,
+      user: newDoctor
+    });
+
   } catch (error) {
-    console.error(error.stack);
-    res.status(500).json({ success: false, message: error.message });
+    console.error("Doctor signup error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || "Server error during registration" 
+    });
   }
 };
 
@@ -63,23 +105,34 @@ const address = typeof req.body.address === 'string'
 const loginDoctor = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Email and password are required" 
+      });
+    }
     // Check if doctor exists
     const doctor = await doctorModel.findOne({ email });
     if (!doctor) {
-      return res.status(400).json({ success: false, message: "Invalid credentials" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials" });
     }
 
     // Check if password matches
     const isMatch = await bcrypt.compare(password, doctor.password);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: "Invalid credentials" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials" });
     }
 
     // Create JWT token
     const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET);
     console.log("Generated JWT Payload:", { id: doctor._id });
-    res.json({ success: true, token });
+    res.json({ success: true, message: "Login successful",
+      token,
+      user: doctor });
   } catch (error) {
     console.error(error.stack);
     res.status(500).json({ success: false, message: error.message });
@@ -94,11 +147,15 @@ const changeAvailability = async (req, res) => {
     // Find doctor by ID
     const docData = await doctorModel.findById(docId);
     if (!docData) {
-      return res.status(404).json({ success: false, message: "Doctor not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Doctor not found" });
     }
 
     // Toggle availability
-    await doctorModel.findByIdAndUpdate(docId, { available: !docData.available });
+    await doctorModel.findByIdAndUpdate(docId, {
+      available: !docData.available,
+    });
     res.status(200).json({ success: true, message: "✅Availability changed" });
   } catch (error) {
     console.error(error.stack);
@@ -127,7 +184,7 @@ const appointmentsDoctor = async (req, res) => {
     const appointments = await appointmentModel.find({ docId });
     res.json({ success: true, appointments });
   } catch (error) {
-    console.error("Fetch Appointments Error:",error.stack);
+    console.error("Fetch Appointments Error:", error.stack);
     res.json({ success: false, message: error.message });
   }
 };
@@ -140,16 +197,25 @@ const appointmentComplete = async (req, res) => {
     // Find appointment by ID
     const appointment = await appointmentModel.findById(appointmentId);
     if (!appointment) {
-      return res.status(404).json({ success: false, message: "Appointment not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Appointment not found" });
     }
 
     // Check if the appointment belongs to the doctor
     if (appointment.docId.toString() !== docId) {
-      return res.status(400).json({ success: false, message: "Not authorized to mark this appointment" });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Not authorized to mark this appointment",
+        });
     }
 
     // Mark the appointment as completed
-    await appointmentModel.findByIdAndUpdate(appointmentId, { isCompleted: true });
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
+      isCompleted: true,
+    });
     res.json({ success: true, message: "✅Appointment completed" });
   } catch (error) {
     console.error(error.stack);
@@ -165,16 +231,25 @@ const appointmentCancel = async (req, res) => {
     // Find appointment by ID
     const appointment = await appointmentModel.findById(appointmentId);
     if (!appointment) {
-      return res.status(404).json({ success: false, message: "Appointment not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Appointment not found" });
     }
 
     // Check if the appointment belongs to the doctor
     if (appointment.docId.toString() !== docId) {
-      return res.status(400).json({ success: false, message: "Not authorized to cancel this appointment" });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Not authorized to cancel this appointment",
+        });
     }
 
     // Cancel the appointment
-    await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
+      cancelled: true,
+    });
     res.json({ success: true, message: "Appointment cancelled" });
   } catch (error) {
     console.error(error.stack);
@@ -192,7 +267,17 @@ const doctorDashboard = async (req, res) => {
 
     // Guard condition for empty appointments
     if (!appointments || appointments.length === 0) {
-      return res.status(200).json({ success: true, dashData: { earnings: 0, appointments: 0, patients: 0, latestAppointments: [] } });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          dashData: {
+            earnings: 0,
+            appointments: 0,
+            patients: 0,
+            latestAppointments: [],
+          },
+        });
     }
 
     let earnings = 0;

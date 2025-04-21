@@ -18,8 +18,8 @@ connectCloudinary()
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-
 // Route middlewares
 app.use("/api/doctor", doctorRouter);//localhost:4000/api/doctor/signup
 app.use('/api/user', userRouter)  // localhost:4000/api/user/login
