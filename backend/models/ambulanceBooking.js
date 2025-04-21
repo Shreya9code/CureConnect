@@ -10,6 +10,9 @@ const ambulanceBookingSchema = new mongoose.Schema(
     pickupLocation: {
       type: String,
       required: true,
+    },destination: {
+      type: String,
+      required: true,
     },
     date: {
       type: String,

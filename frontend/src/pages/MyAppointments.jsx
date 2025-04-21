@@ -122,14 +122,14 @@ const MyAppointments = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-                {!item.cancelled && !item.isCompleted && (
+                {/*!item.cancelled && !item.isCompleted && (
                   <button
                     onClick={() => alert("Payment feature coming soon!")}
                     className="px-4 py-2 !bg-blue-500 text-white font-medium rounded-lg shadow hover:bg-blue-600 transition"
                   >
                     Pay
                   </button>
-                )}
+                )*/}
                 {!item.cancelled && !item.isCompleted && (
                   <button
                     onClick={() => cancelAppointment(item._id)}

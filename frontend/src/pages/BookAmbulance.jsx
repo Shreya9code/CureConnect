@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import FullMap from "../components/FullMap";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -8,8 +8,9 @@ const BookAmbulance = () => {
   const [destination, setDestination] = useState(null);
   const [routeInfo, setRouteInfo] = useState(null);
   const [bookingId, setBookingId] = useState(null);
-  const [bookingAccepted, setBookingAccepted] = useState(false);
   const [driverDetails, setDriverDetails] = useState(null);
+  const [bookingStatus, setBookingStatus] = useState(null); 
+  const [myBookings, setMyBookings] = useState([]);
   const [loading, setLoading] = useState(false); // to show a loading state while booking
   const checkBookingStatus = async (bookingId) => {
     try {
@@ -20,12 +21,15 @@ const BookAmbulance = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
-      );
-      if (res.data.data.status === "assigned") {
+      );console.log(res.data.data)
+      const status = res.data.data.status;
+      setBookingStatus(status);
+
+      if (status === "assigned") {
         toast.success("✅ Driver accepted your request!");
-        setBookingAccepted(true);
         setDriverDetails(res.data.driver);
-      } else {
+        fetchMyBookings();
+      }else {
         setTimeout(() => checkBookingStatus(bookingId), 4000); // check again in 3s
       }
     } catch (err) {
@@ -56,16 +60,37 @@ const BookAmbulance = () => {
       );
       console.log(res)
       toast.success(res.data.message || "🚑 Booking request sent! Waiting for driver...");
-      setLoading(false); // Reset loading state
-      setBookingId(res.data.data._id);
-      checkBookingStatus(res.data.data._id);
+      const newBookingId = res.data.data._id;
+      setBookingId(newBookingId);
+      setBookingStatus("pending");
+      setDriverDetails(null);
+      setLoading(false);
+      checkBookingStatus(newBookingId);
+      fetchMyBookings();
     } catch (err) {
       toast.error(err.response?.data?.message || "Booking failed");
       console.log(err)
       setLoading(false); // Reset loading state
     }
   };
+ // 🧠 Fetch all previous bookings
+ const fetchMyBookings = async () => {
+  try {
+    const res = await axios.get("http://localhost:4000/api/user/ambulance/my-bookings", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
+    setMyBookings(res.data.data.reverse()); // latest first
+  } catch (err) {
+    console.error("Error fetching my bookings:", err);
+  }
+};
+
+useEffect(() => {
+  fetchMyBookings();
+}, []);
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">🚑 Book Ambulance</h1>
@@ -80,12 +105,58 @@ const BookAmbulance = () => {
         disabled={loading} // Disable button when booking is in progress
       >
         {loading ? "Booking..." : "Book Now"}
-      </button>{bookingAccepted && (
-        <button className="mt-4 !bg-green-600 text-white p-2 rounded">
-          View Driver: {driverDetails?.name} 📞 {driverDetails?.phone}
-        </button>
-      )}
-    </div>
+      </button>
+      {bookingId && (
+        <div className="mt-4 p-4 border border-gray-300 rounded bg-gray-50">
+          <p className="text-sm text-gray-600 mb-2">
+            Booking ID: <span className="font-mono">{bookingId}</span>
+          </p>
+
+          {bookingStatus === "pending" && (
+            <p className="text-yellow-600 font-semibold">
+              ⏳ Booking Status: Pending. Waiting for a driver...
+            </p>
+          )}
+{bookingStatus === "assigned" && driverDetails && (
+            <div className="text-green-600 font-semibold">
+              ✅ Booking Status: Assigned<br />
+              Driver: {driverDetails.name}<br />
+              📞 Phone: {driverDetails.phone}<br />
+              🚐 Vehicle: {driverDetails.vehicleNumber}
+            </div>
+          )}</div>)}
+          {/* 🚘 Booking History */}
+      <h2 className="text-xl font-bold mt-10 mb-2">📜 My Ambulance Bookings</h2>
+
+{myBookings.length === 0 ? (
+  <p className="text-gray-500">You have no previous bookings.</p>
+) : (
+  <div className="space-y-4">
+    {myBookings.map((booking) => (
+      <div key={booking._id} className="border rounded p-4 shadow-sm bg-white">
+        <p><strong>🟢 Status:</strong>{" "}
+          {booking.status === "pending" ? (
+            <span className="text-yellow-600">Pending</span>
+          ) : booking.status === "assigned" ? (
+            <span className="text-green-600">Assigned</span>
+          ) : (
+            <span className="text-gray-600">Completed</span>
+          )}
+        </p>
+        <p><strong>📍 Pickup:</strong> {booking.pickupLocation}</p>
+        <p><strong>🏁 Destination:</strong> {booking.destination}</p>
+        <p><strong>🗓️ Date:</strong> {booking.date}</p>
+        <p><strong>⏰ Time:</strong> {new Date(booking.time).toLocaleTimeString()}</p>
+        {booking.driverId && (
+          <div className="mt-2 text-sm text-gray-700">
+            <p><strong>🚐 Driver:</strong> {booking.driverId.name}</p>
+            <p><strong>📞 Phone:</strong> {booking.driverId.phone}</p>
+            <p><strong>🔢 Vehicle:</strong> {booking.driverId.vehicleNumber}</p>
+          </div>
+        )}
+      </div>
+    ))}
+    </div>)}</div>
   );
 };
 
