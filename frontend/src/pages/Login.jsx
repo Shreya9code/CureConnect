@@ -215,14 +215,22 @@ function Login() {
           {/* Doctor-specific fields */}
           {state === "Sign Up" && role === "Doctor" && (
             <>
-              <input
-                type="text"
-                placeholder="Speciality"
-                value={speciality}
-                onChange={(e) => setSpeciality(e.target.value)}
-                required
-                className="w-full border p-2 rounded"
-              />
+              <select
+  value={speciality}
+  onChange={(e) => setSpeciality(e.target.value)}
+  required
+  className="w-full border p-2 rounded"
+>
+  <option value="">Select Speciality</option>
+  <option value="General Physician">General Physician</option>
+  <option value="Gynecologist">Gynecologist</option>
+  <option value="Dermatologist">Dermatologist</option>
+  <option value="Pediatricians">Pediatricians</option>
+  <option value="Neurologist">Neurologist</option>
+  <option value="Gastroenterologist">Gastroenterologist</option>
+  <option value="Other">Other</option>
+</select>
+
               <input
                 type="text"
                 placeholder="Degree"
