@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const Header = () => {
@@ -21,9 +22,17 @@ const Header = () => {
           href="#speciality"
           className="flex items-center gap-2 !bg-white px-8 py-3 rounded-full text-gray-600 text-sm m-auto hover:scale-105 transition-all duration-300"
         >
-          Book Appointments <img className="w-3" src={assets.arrow_icon} />
+          All Doctors <img className="w-3" src={assets.arrow_icon} />
         </a>
+        {/* <Link
+          to="/patient/book-ambulance"
+          className="flex items-center gap-2 !bg-white px-8 py-3 rounded-full text-gray-600 text-sm m-auto hover:scale-105 transition-all duration-300"
+        >
+          Ambulance Booking <img className="w-3" src={assets.arrow_icon} />
+        </Link> */}
       </div>
+
+      
 
       {/* Right Section */}
       <div className="md:w-1/2 relative flex justify-center items-center">
@@ -34,6 +43,7 @@ const Header = () => {
         />
       </div>
     </div>
+    
   );
 };
 

@@ -34,7 +34,7 @@ const Doctors = () => {
 
   return (
     <div>
-      <p className="text-gray-600">Browse through the Doctors Specialist</p>
+      <p className="text-gray-600">Filter doctors by speciality and book your appointment quickly.</p>
 
       <div className={`flex-col sm:flex-row items-start gap-5 mt-5 ${showFilter ? "flex" : "hidden sm:flex"}`}>
         {/* Filter Button for Mobile */}

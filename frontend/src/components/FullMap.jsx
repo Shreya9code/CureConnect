@@ -16,7 +16,6 @@ const RecenterMap = ({ lat, lng }) => {
   }, [lat, lng, map]);
   return null;
 };
-
 const FullMap = ({ setPickup, setDestination, setRouteInfo }) => {
   const [pickupPos, setPickupPos] = useState(null);
   const [destPos, setDestPos] = useState(null);

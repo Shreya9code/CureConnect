@@ -6,7 +6,8 @@ import {
   updateProfile,
   bookAppointment,
   listAppointment,
-  cancelAppointment,bookAmbulanceController,getAllAmbulanceDrivers /*paymentRazorpay, verifyRazorpay*/,
+  cancelAppointment,bookAmbulanceController,getAllAmbulanceDrivers, /*paymentRazorpay, verifyRazorpay*/
+  getBookingStatus,
 } from "../controllers/userController.js";
 import authUser from "../middlewares/authUser.js";
 import { upload } from "../middlewares/multer.js";
@@ -37,4 +38,5 @@ userRouter.get("/appointments", authUser, listAppointment);
 userRouter.post("/cancel-appointment", authUser, cancelAppointment);
 userRouter.post("/ambulance/book",authUser, bookAmbulanceController);
 userRouter.get("/ambulance/drivers", authUser, getAllAmbulanceDrivers);
+userRouter.get("/ambulance/status/:bookingId", authUser, getBookingStatus);
 export default userRouter;

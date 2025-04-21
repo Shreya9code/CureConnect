@@ -267,11 +267,21 @@ export const bookAmbulanceController = async (req, res) => {
       return res.status(404).send({ success: false, message: "User not found" });
     }
 
-    const { pickupLocation, date, time, /*driverId*/ } = req.body;
+    //const { pickupLocation, date, time, /*driverId*/ } = req.body;
+    const { pickupLocation,destination } = req.body;
 
+    if (!pickupLocation) {
+      return res.status(400).send({ success: false, message: "Pickup location is required" });
+    }
+    
+    const now = new Date();
+    const time = now.toISOString();
+    const date = now.toISOString().split("T")[0]; // YYYY-MM-DD
+    
     const newBooking = new AmbulanceBooking({
       user: userId,
-      pickupLocation,
+      pickupLocation: pickupLocation.display_name,
+      destination: destination.display_name,
       date,
       time,
       status: "pending", // Set the status to pending
@@ -302,6 +312,30 @@ export const getMyAmbulanceBookings = async (req, res) => {
       message: "Your ambulance bookings",
       data: bookings,
     });
+  } catch (err) {
+    res.status(500).send({ success: false, message: "Server error", error: err.message });
+  }
+};
+export const getBookingStatus = async (req, res) => {
+  try {
+    const booking = await AmbulanceBooking.findById(req.params.bookingId);
+
+    if (!booking) {
+      return res.status(404).send({ success: false, message: "Booking not found" });
+    }
+
+    const responseData = { ...booking._doc };
+
+    if (booking.status === "assigned") {
+      const driver = await ambulanceDriverModel.findById(booking.driverId);
+      responseData.driver = {
+        name: driver?.name,
+        phone: driver?.phone,
+        vehicleNumber: driver?.vehicleNumber,
+      };
+    }
+
+    res.send({ success: true, data: responseData, driver: responseData.driver });
   } catch (err) {
     res.status(500).send({ success: false, message: "Server error", error: err.message });
   }

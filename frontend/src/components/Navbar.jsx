@@ -27,8 +27,14 @@ const Navbar = () => {
         <NavLink to="/">
           <li className="py-1">Home</li>
         </NavLink>
-        <NavLink to="/doctors">
-          <li className="py-1">All Doctors</li>
+        <NavLink to="/patient">
+          <li className="py-1">Patient</li>
+        </NavLink>
+        <NavLink to="/doctor">
+          <li className="py-1">Doctor</li>
+        </NavLink>
+        <NavLink to="/ambulance">
+          <li className="py-1">AmbulanceDriver</li>
         </NavLink>
         <NavLink to="/about">
           <li className="py-1">About</li>

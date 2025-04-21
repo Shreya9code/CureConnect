@@ -52,7 +52,7 @@ export default function DoctorDashboard() {
   }, []);
   if (loading) return <div className="p-6">Loading dashboard...</div>;
   if (!doctor)
-    return <div className="p-6 text-red-600">Failed to load doctor data</div>;
+    return <div className="p-6 text-red-600">Please login as doctor to view doctor data</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-8">

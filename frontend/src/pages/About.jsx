@@ -34,7 +34,7 @@ const About = () => {
               <b className="text-blue-500">Appointment Scheduling</b>: Book appointments with doctors and specialists at your convenience.
             </li>
             <li>
-              <b className="text-blue-500">Video Consultations</b>: Connect with professionals via secure video calls.
+            <b className="!text-blue-500">Prescription Reader</b>: Easily scan and understand your prescriptions using AI assistance.
             </li>
             <li>
               <b className="text-blue-500">Ambulance Services</b>: Emergency ambulance access, 24/7.
@@ -66,7 +66,7 @@ const About = () => {
         {/* Card 2 */}
         <div className="border p-6 flex flex-col gap-3 hover:!bg-blue-500 hover:!text-white transition-all duration-300 rounded-xl shadow-md">
           <b>Convenience</b>
-          <p>Find doctors and services near you, whenever you need them.</p>
+          <p>Book an ambulance instantly, anytime you need emergency assistance.</p>
         </div>
 
         {/* Card 3 */}
