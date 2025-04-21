@@ -74,7 +74,8 @@ export const getPendingBookingsForDriver = async (req, res) => {
   try {
     const driverId = req.user._id; // Assuming driver's ID is in the request
 
-    const bookings = await AmbulanceBooking.find({ driverId: null, status: "pending" })//.populate("user", "name email");
+    const bookings = await AmbulanceBooking.find({ driverId: null, status: "pending" }).populate({ path: "user", model: "user", select: "name email" })
+    //.populate("user", "name email");
 
     res.status(200).send({
       success: true,
