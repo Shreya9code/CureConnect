@@ -27,5 +27,7 @@ cd backend
 npm i
 npm run server
 ```
+Backend url: https://cureconnect-backend-90kf.onrender.com
+Frontend url: https://cure-connect2-onh4fkrn7-shreya-denres-projects.vercel.app
 ### ✨ Made by *Team CodeHacks*
 Driven by code. Fueled by purpose.
