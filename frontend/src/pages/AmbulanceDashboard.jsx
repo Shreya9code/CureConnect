@@ -95,6 +95,9 @@ const AmbulanceDashboard = () => {
                       <strong>Pickup:</strong> {booking.pickupLocation}
                     </p>
                     <p>
+                      <strong>Destination:</strong> {booking.destination}
+                    </p>
+                    <p>
                       <strong>Date:</strong> {booking.date}
                     </p>
                     <p>
