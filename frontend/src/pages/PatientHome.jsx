@@ -17,7 +17,7 @@ const PatientHome = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="text-center text-red-500 mt-10">
+      <div className="min-h-screen flex items-center justify-center text-xl font-semibold text-red-500">
         <h2>Please login as a patient to view the patient home page.</h2>
       </div>
     );

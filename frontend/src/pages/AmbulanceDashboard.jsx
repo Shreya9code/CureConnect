@@ -64,7 +64,8 @@ const AmbulanceDashboard = () => {
   }
 
   if (!isLoggedIn || isError) {
-    return <p className="text-red-500">Please login to view your bookings.</p>; // Show login message in red
+    return <p className="min-h-screen flex items-center justify-center text-xl font-semibold text-red-500"
+    >Please login as an amubulance driver to view your bookings.</p>; // Show login message in red
   }
 
   return (

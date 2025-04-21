@@ -51,12 +51,12 @@ const App = () => {
     navigate("/login");
   };
 
-  // If user is logged in, redirect them to /patient when trying to visit the homepage or /patient
-  useEffect(() => {
-    if (isLoggedIn && (location.pathname === "/" || location.pathname === "/patient")) {
-      navigate("/patient");
-    }
-  }, [isLoggedIn, location.pathname, navigate]);
+  // // If user is logged in, redirect them to /patient when trying to visit the homepage or /patient
+  // useEffect(() => {
+  //   if (isLoggedIn && (location.pathname === "/" || location.pathname === "/patient")) {
+  //     navigate("/patient");
+  //   }
+  // }, [isLoggedIn, location.pathname, navigate]);
 
   return (
     <div className="mx-4 sm:mx-[10%]">
