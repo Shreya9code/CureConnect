@@ -87,7 +87,7 @@ const AmbulanceDashboard = () => {
                     className="p-4 !bg-white shadow rounded-xl space-y-1"
                   >
                     <p>
-                      <strong>Patient:</strong>{" "}
+                      <strong>Patient:</strong>{" "}{booking._id}
                       {booking.user?.name || "Unknown"} (
                       {booking.user?.email || "No email"})
                     </p>
