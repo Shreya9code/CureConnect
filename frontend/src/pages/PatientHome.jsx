@@ -38,6 +38,12 @@ const PatientHome = () => {
             Book Appointment
           </Link>
           <Link
+            to="/my-appointments"
+            className="p-4 !bg-teal-500 !text-white text-xl text-center rounded-lg shadow-md hover:!bg-teal-600 hover:!text-white"
+          >
+            My Appointments
+          </Link>
+          <Link
             to="/patient/book-ambulance"
             className="p-4 !bg-red-500 !text-white text-xl text-center rounded-lg shadow-md hover:!bg-red-600 hover:!text-white"
           >

@@ -2,16 +2,6 @@ import { useState, useEffect } from "react";
 import { Bell, Calendar, User } from "lucide-react";
 import axios from "axios";
 
-const doctorData = {
-  name: "Dr. Ananya Sharma",
-  specialization: "Cardiologist",
-  profilePic: "https://via.placeholder.com/150",
-  appointments: [
-    { id: 1, patient: "Rahul Sen", time: "10:30 AM" },
-    { id: 2, patient: "Neha Gupta", time: "11:00 AM" },
-  ],
-};
-
 export default function DoctorDashboard() {
   const [doctor, setDoctor] = useState(null);
   const [appointments, setAppointments] = useState([]);
@@ -50,12 +40,35 @@ export default function DoctorDashboard() {
     };
     fetchAppointments();
   }, []);
+  const cancelAppointment = async (docId, appointmentId) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/doctor/cancel-appointment",
+        { docId, appointmentId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      alert("Appointment cancelled");
+      // Refresh appointments
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt._id === appointmentId ? { ...appt, cancelled: true } : appt
+        )
+      );
+    } catch (err) {
+      alert("Cancel failed: " + err.response?.data?.message);
+      console.error("Cancel appointment error:", err);
+    }
+  };
   if (loading) return <div className="p-6">Loading dashboard...</div>;
   if (!doctor)
     return <div className="p-6 text-red-600">Please login as doctor to view doctor data</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-8">
+    <div className="min-h-screen !bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-8">
       {/* Header */}
       <div className="!bg-white p-6 shadow-xl rounded-3xl flex justify-between items-center mb-8">
       <div className="flex items-center gap-5">
@@ -73,10 +86,8 @@ export default function DoctorDashboard() {
             </p>
           </div>
         </div>
-        {/*<button><Bell className="text-blue-600 hover:text-blue-800 transition" /></button>*/}
       </div>
-
-      {/* Dashboard Content */}{/*sm:grid-cols-2 lg:grid-cols-3*/} 
+      {/* Dashboard Content */}
       <div className="grid grid-cols-1 gap-8">
       {/* Upcoming Appointments */}
       <div className="bg-white/80 backdrop-blur-lg border border-blue-200 p-6 rounded-3xl shadow-xl transition-all hover:scale-[1.01]">
@@ -111,6 +122,20 @@ export default function DoctorDashboard() {
                   📍 {appt?.userData?.address?.line1 || ""},{" "}
                   {appt?.userData?.address?.line2 || ""}
                 </div>
+                {!appt.cancelled ? (
+                    <button
+                      onClick={() =>
+                        cancelAppointment(appt.docId, appt._id)
+                      }
+                      className="mt-3 !bg-red-500 hover:!bg-red-600 text-white px-3 py-1 rounded text-sm self-end"
+                    >
+                      Cancel Appointment
+                    </button>
+                  ) : (
+                    <span className="mt-3 text-red-500 font-semibold text-sm self-end">
+                      ❌ Cancelled
+                    </span>
+                  )}
               </div>
             ))}</div>
           ) : (

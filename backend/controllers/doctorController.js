@@ -86,7 +86,6 @@ const loginDoctor = async (req, res) => {
   }
 };
 
-
 // Change Doctor Availability
 const changeAvailability = async (req, res) => {
   try {

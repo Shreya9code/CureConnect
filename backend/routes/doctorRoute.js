@@ -25,7 +25,7 @@ doctorRouter.post('/login', loginDoctor);
 doctorRouter.get('/list', doctorList);
 doctorRouter.get('/appointments',authDoctor, appointmentsDoctor);
 doctorRouter.post('/complete-appointments', appointmentComplete);
-doctorRouter.get('/cancel-appointment', appointmentCancel);
+doctorRouter.post('/cancel-appointment',authDoctor, appointmentCancel);
 doctorRouter.get('/dashboard',authDoctor, doctorDashboard);
 
 export default doctorRouter;
