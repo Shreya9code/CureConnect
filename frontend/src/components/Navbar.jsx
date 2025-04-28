@@ -94,18 +94,24 @@ const Navbar = () => {
             alt="Close menu"
           />
         </div>
-        <ul className="flex flex-col items-center gap-2 mt-5 px-5 text-lg font-medium">
+        <ul className="flex flex-col items-start gap-4 mt-5 px-5 text-lg font-medium">
           <NavLink to="/">
-            <p className="px-4 py-2 rounded-full inline-block">Home</p>
+            <p className="py-2">Home</p>
           </NavLink>
-          <NavLink to="/doctors">
-            <p className="px-4 py-2 rounded-full inline-block">All Doctors</p>
+          <NavLink to="/patient">
+            <p className="py-2">Patient</p>
+          </NavLink>
+          <NavLink to="/doctor">
+            <p className="py-2">Doctor</p>
+          </NavLink>
+          <NavLink to="/ambulance">
+            <p className="py-2">AmbulanceDriver</p>
           </NavLink>
           <NavLink to="/about">
-            <p className="px-4 py-2 rounded-full inline-block">About</p>
+            <p className="py-2">About</p>
           </NavLink>
           <NavLink to="/contact">
-            <p className="px-4 py-2 rounded-full inline-block">Contact</p>
+            <p className="py-2">Contact</p>
           </NavLink>
 
           {/* Logout button in mobile menu */}

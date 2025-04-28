@@ -16,7 +16,8 @@ const RecenterMap = ({ lat, lng }) => {
   }, [lat, lng, map]);
   return null;
 };
-const FullMap = ({ setPickup, setDestination, setRouteInfo }) => {
+
+const FullMap = ({ setPickup, setDestination, setRouteInfo, setDistance }) => {
   const [pickupPos, setPickupPos] = useState(null);
   const [destPos, setDestPos] = useState(null);
   const [pickupInput, setPickupInput] = useState("");
@@ -25,9 +26,7 @@ const FullMap = ({ setPickup, setDestination, setRouteInfo }) => {
 
   const geocode = async (query) => {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-        query
-      )}`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
     );
     const data = await res.json();
     if (data && data.length > 0) {
@@ -52,9 +51,13 @@ const FullMap = ({ setPickup, setDestination, setRouteInfo }) => {
       ]);
       setRouteCoords(coords);
       setRouteInfo(data.routes[0]);
+      // set distance in km (divide meters by 1000)
+      const distanceInKm = data.routes[0].distance / 1000;
+      setDistance(distanceInKm.toFixed(2)); // 2 decimal places
     } else {
       setRouteCoords([]);
       setRouteInfo(null);
+      setDistance(null);
     }
   };
 

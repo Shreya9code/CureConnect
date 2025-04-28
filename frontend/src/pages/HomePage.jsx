@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaUserMd, FaClinicMedical, FaCalendarAlt, FaChartLine, FaPhoneAlt } from 'react-icons/fa';
+import { FaUserMd, FaCalendarAlt, FaClinicMedical, FaChartLine, FaPhoneAlt } from 'react-icons/fa';
 import { GiHealthNormal } from 'react-icons/gi';
 
 const HomePage = () => {
@@ -63,7 +63,6 @@ const HomePage = () => {
             Open Prescription Reader
           </div>
 
-
           <Link
             to="/reminder"
             className="p-4 !bg-fuchsia-400 text-white text-center rounded-lg shadow-md hover:!bg-purple-600"
@@ -73,68 +72,100 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section id="services" className="container mx-auto px-6 py-16">
+      {/* Our Services Section */}
+      <section id="services" className="container mx-auto px-6 py-16 bg-white rounded-xl shadow-md">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">Our Services</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            We offer comprehensive healthcare services to meet all your medical needs.
+            We offer comprehensive healthcare services tailored for different types of users. Whether you're a patient, doctor, or caregiver, we have something to assist you.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <ServiceCard 
-            icon={<FaUserMd className="text-blue-600 text-3xl" />} 
-            title="Expert Doctors" 
-            description="Consult with board-certified physicians and specialists across various fields."
-          />
-          <ServiceCard 
-            icon={<FaClinicMedical className="text-blue-600 text-3xl" />} 
-            title="Medical Treatments" 
-            description="Advanced treatments and procedures using cutting-edge technology."
-          />
-          <ServiceCard 
-            icon={<FaCalendarAlt className="text-blue-600 text-3xl" />} 
-            title="Easy Appointments" 
-            description="Book, reschedule or cancel appointments with just a few clicks."
-          />
-          <ServiceCard 
-            icon={<GiHealthNormal className="text-blue-600 text-3xl" />} 
-            title="Health Checkups" 
-            description="Comprehensive health screenings and preventive care programs."
-          />
-          <ServiceCard 
-            icon={<FaChartLine className="text-blue-600 text-3xl" />} 
-            title="Health Tracking" 
-            description="Monitor your health metrics and progress over time."
-          />
-          <ServiceCard 
-            icon={<FaPhoneAlt className="text-blue-600 text-3xl" />} 
-            title="Emergency Care" 
-            description="24/7 emergency services and immediate medical attention."
-          />
+        
+        {/* General Features (Accessible Without Registration) */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-semibold text-gray-800 mb-4">🌐 General Features (Accessible Without Registration)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <ServiceCard 
+              icon={<FaUserMd className="text-blue-600 text-3xl" />} 
+              title="📝 Prescription Analysis" 
+              description="Upload your medical prescription and get an organized analysis of medicines and tests."
+            />
+            <ServiceCard 
+              icon={<FaChartLine className="text-blue-600 text-3xl" />} 
+              title="🩺 Disease Prediction" 
+              description="Answer a few simple health-related questions to get early predictions of possible diseases."
+            />
+            <ServiceCard 
+              icon={<FaPhoneAlt className="text-blue-600 text-3xl" />} 
+              title="⏰ Medicine Reminder" 
+              description="Set up reminders to take your medicines on time and stay consistent with your treatment."
+            />
+          </div>
         </div>
-      </section>
 
-      {/* Stats Section */}
-      <section className="bg-blue-600 text-white py-12">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div className="p-4">
-              <div className="text-3xl font-bold mb-2">500+</div>
-              <div className="text-blue-100">Qualified Doctors</div>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold mb-2">24/7</div>
-              <div className="text-blue-100">Medical Support</div>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold mb-2">50K+</div>
-              <div className="text-blue-100">Happy Patients</div>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold mb-2">15+</div>
-              <div className="text-blue-100">Years Experience</div>
-            </div>
+        {/* Patient Services */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-semibold text-gray-800 mb-4">🧑‍⚕️ Patients (Users) Services</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <ServiceCard 
+              icon={<FaCalendarAlt className="text-blue-600 text-3xl" />} 
+              title="📅 Book Doctor Appointments" 
+              description="Search and book appointments with doctors based on specialty and location."
+            />
+            <ServiceCard 
+              icon={<FaClinicMedical className="text-blue-600 text-3xl" />} 
+              title="📋 View Appointment List" 
+              description="Easily access your list of upcoming and past doctor appointments with full details."
+            />
+            <ServiceCard 
+              icon={<FaPhoneAlt className="text-blue-600 text-3xl" />} 
+              title="🚑 Book Ambulance Services" 
+              description="Quickly request and book ambulance services for emergencies."
+            />
+          </div>
+        </div>
+
+        {/* Doctor Services */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-semibold text-gray-800 mb-4">👨‍⚕️ Doctors Services</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <ServiceCard 
+              icon={<FaCalendarAlt className="text-blue-600 text-3xl" />} 
+              title="📅 View Appointments/Bookings" 
+              description="View and manage all your appointment bookings from patients."
+            />
+            <ServiceCard 
+              icon={<FaUserMd className="text-blue-600 text-3xl" />} 
+              title="📃 Review Patient Information" 
+              description="Review details shared by patients to prepare for consultations."
+            />
+            <ServiceCard 
+              icon={<FaCalendarAlt className="text-blue-600 text-3xl" />} 
+              title="✅ Manage Appointments" 
+              description="Accept or cancel patient appointments as needed."
+            />
+          </div>
+        </div>
+
+        {/* Ambulance Driver Services */}
+        <div>
+          <h3 className="text-2xl font-semibold text-gray-800 mb-4">🚑 Ambulance Drivers Services</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <ServiceCard 
+              icon={<FaCalendarAlt className="text-blue-600 text-3xl" />} 
+              title="📋 View Ambulance Bookings" 
+              description="Check the list of ambulance requests made by patients."
+            />
+            <ServiceCard 
+              icon={<FaUserMd className="text-blue-600 text-3xl" />} 
+              title="📃 Review Patient Details" 
+              description="Access patient details to ensure timely and appropriate service."
+            />
+            <ServiceCard 
+              icon={<FaCalendarAlt className="text-blue-600 text-3xl" />} 
+              title="🚗 Manage Service Availability" 
+              description="Update your availability status for accepting ambulance bookings."
+            />
           </div>
         </div>
       </section>
@@ -152,7 +183,6 @@ const HomePage = () => {
           >
             Get Started Today
           </Link>
-
         </div>
       </section>
     </div>
@@ -161,7 +191,7 @@ const HomePage = () => {
 
 const ServiceCard = ({ icon, title, description }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div className="border p-6 flex flex-col gap-3 hover:!bg-blue-500 hover:!text-white transition-all duration-300 rounded-xl shadow-md">
       <div className="mb-4">{icon}</div>
       <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
       <p className="text-gray-600">{description}</p>
