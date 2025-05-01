@@ -20,11 +20,11 @@ const AmbulanceDashboard = () => {
 
       const [pendingRes, acceptedRes] = await Promise.all([//https://cureconnect-backend-90kf.onrender.com
         axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/pending-bookings", {
-        //axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/pending-bookings", {
+          //axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/pending-bookings", {
           headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/accepted-bookings", {
-        //axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/accepted-bookings", {
+          //axios.get("https://cureconnect-backend-90kf.onrender.com/api/ambulance/accepted-bookings", {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -104,7 +104,7 @@ const AmbulanceDashboard = () => {
                       <strong>Date:</strong> {booking.date}
                     </p>
                     <p>
-                      <strong>Time:</strong> {booking.time}
+                    <strong>Time:</strong> {new Date(booking.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                     <p>
                       <strong>Status:</strong>{" "}
@@ -145,11 +145,15 @@ const AmbulanceDashboard = () => {
                         <strong>Pickup:</strong> {booking.pickupLocation}
                       </p>
                       <p>
+                        <strong>Destination:</strong> {booking.destination}
+                      </p>
+                      <p>
                         <strong>Date:</strong> {booking.date}
                       </p>
                       <p>
-                        <strong>Time:</strong> {booking.time}
+                        <strong>Time:</strong> {new Date(booking.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
+
                       <p>
                         <strong>Status:</strong>{" "}
                         <span className="capitalize">{booking.status}</span>
