@@ -14,7 +14,7 @@ const BookAmbulance = () => {
   const [myBookings, setMyBookings] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const PER_KM_RENT = 10; // Example rate ₹10 per km
+  const PER_KM_RENT = 7; // Example rate ₹7 per km
 
   const checkBookingStatus = async (bookingId) => {
     try {

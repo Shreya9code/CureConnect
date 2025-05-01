@@ -24,9 +24,15 @@ const FullMap = ({ setPickup, setDestination, setRouteInfo, setDistance }) => {
   const [destInput, setDestInput] = useState("");
   const [routeCoords, setRouteCoords] = useState([]);
 
+  const hospitalOptions = [
+    "S.S.K.M Hospital, Kolkata", "Apollo Gleneagles Hospital, Kolkata", "AMRI Hospital, Salt Lake, Kolkata", "Fortis Hospital, Anandapur, Kolkata", "Belle Vue Clinic, Kolkata", "IPGMER and SSKM Hospital, Kolkata", "Calcutta Medical Research Institute (CMRI), Kolkata", "Medica Super Speciality Hospital, Kolkata", "Ruby General Hospital, Kolkata", "Peerless Hospital, Kolkata", "Tata Medical Center, Kolkata", "Saroj Gupta Cancer Centre and Research Institute, Kolkata", "Institute of Neurosciences Kolkata (INK)", "B.R. Singh Hospital, Kolkata", "Nil Ratan Sircar Medical College and Hospital (NRS), Kolkata", "Narayana Multispeciality Hospital, Howrah", "BM Birla Heart Research Centre, Kolkata", "Desun Hospital, Kolkata", "Woodlands Multispeciality Hospital, Kolkata", "Vivekananda Institute of Medical Sciences, Kolkata"
+  ];
+
   const geocode = async (query) => {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        query
+      )}`
     );
     const data = await res.json();
     if (data && data.length > 0) {
@@ -51,9 +57,8 @@ const FullMap = ({ setPickup, setDestination, setRouteInfo, setDistance }) => {
       ]);
       setRouteCoords(coords);
       setRouteInfo(data.routes[0]);
-      // set distance in km (divide meters by 1000)
       const distanceInKm = data.routes[0].distance / 1000;
-      setDistance(distanceInKm.toFixed(2)); // 2 decimal places
+      setDistance(distanceInKm.toFixed(2));
     } else {
       setRouteCoords([]);
       setRouteInfo(null);
@@ -86,13 +91,18 @@ const FullMap = ({ setPickup, setDestination, setRouteInfo, setDistance }) => {
           placeholder="Enter pickup location"
           className="p-2 border rounded w-full"
         />
-        <input
-          type="text"
+        <select
           value={destInput}
           onChange={(e) => setDestInput(e.target.value)}
-          placeholder="Enter destination"
           className="p-2 border rounded w-full"
-        />
+        >
+          <option value="">Select a hospital</option>
+          {hospitalOptions.map((hospital, idx) => (
+            <option key={idx} value={hospital}>
+              {hospital}
+            </option>
+          ))}
+        </select>
         <button
           onClick={handleSearch}
           className="!bg-blue-600 text-white px-4 rounded"
@@ -103,7 +113,7 @@ const FullMap = ({ setPickup, setDestination, setRouteInfo, setDistance }) => {
 
       {/* Map */}
       <MapContainer
-        center={[22.5726, 88.3639]} // Default center: Kolkata
+        center={[22.5726, 88.3639]} // Kolkata default
         zoom={13}
         style={{ width: "100%", height: "400px" }}
       >

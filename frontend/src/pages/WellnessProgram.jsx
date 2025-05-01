@@ -105,7 +105,7 @@ const WellnessProgram = () => {
             className={`px-4 py-2 rounded-full border font-medium text-sm ${
               activeCategory === cat
                 ? "!bg-green-600 text-white"
-                : "bg-white text-green-700 hover:!bg-green-100"
+                : "!bg-white text-green-700 hover:!bg-green-100"
             } transition-all duration-200`}
             onClick={() => {
               setActiveCategory(cat);
