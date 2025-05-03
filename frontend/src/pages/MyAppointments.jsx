@@ -81,6 +81,10 @@ const MyAppointments = () => {
       <p className="pb-3 mt-12 font-medium text-zinc-700 border-b">
         My Appointments
       </p>
+      {/* Moving blue bold line */}
+      <div className="text-center text-blue-600 font-bold mt-2 animate-pulse">
+        If the doctor cancels your appointment, it will be shown within 24hr.
+      </div>
       <div>
         {appointments.length === 0 ? (
           <p className="text-center text-gray-500 mt-4">
