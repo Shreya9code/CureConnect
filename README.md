@@ -3,16 +3,17 @@
 CureConnect is a healthcare web application designed to streamline patient, doctor, and ambulance services through an intuitive and efficient interface.
 
 ## 🚀 Features
-- **Patient Portal**: Appointment booking, prescription viewing, and medical history.
-- **Doctor Dashboard**: Patient management, prescription uploads, and diagnosis tools.
-- **Ambulance Booking**: Emergency service request with real-time tracking.
+- **Patient Portal**: Appointment booking, ambulance booking, medicine reminder, prescription reader, and disease prediction (based on symptoms).
+- **Doctor Dashboard**: Appointment management (cancel or accept) 
+- **Ambulance Driver Dashboard**: Emergency service request with real-time tracking. 
 - **AI Integration**: Disease prediction and prescription analysis.
 
 ## 🛠️ Tech Stack
 - **Frontend**: React.js, Tailwind CSS
 - **State Management**: Context API
-- **Backend**: (Logics done.To be integrated)
-- **AI Models**:AI-powered features such as disease prediction and prescription analysis are integrated.
+- **Backend**: Node. js, express.js, cloudinary, multer
+- **Database**: MongoDB
+- **AI Models**:Kaggle, Support vector machine, Gemini API, Python, StreamlitCloud, Render
 
 ## 📦 Setup & Deployment
 ### Installation
@@ -28,6 +29,7 @@ npm i
 npm run server
 ```
 Backend url: https://cureconnect-backend-90kf.onrender.com
-Frontend url: https://cure-connect2-onh4fkrn7-shreya-denres-projects.vercel.app
+
+Frontend url: https://cure-connect-ois6i208d-shreya-denres-projects.vercel.app
 ### ✨ Made by *Team CodeHacks*
 Driven by code. Fueled by purpose.
