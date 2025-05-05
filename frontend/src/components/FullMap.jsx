@@ -25,7 +25,30 @@ const FullMap = ({ setPickup, setDestination, setRouteInfo, setDistance }) => {
   const [routeCoords, setRouteCoords] = useState([]);
 
   const hospitalOptions = [
-    "S.S.K.M Hospital, Kolkata", "Apollo Gleneagles Hospital, Kolkata", "AMRI Hospital, Salt Lake, Kolkata", "Fortis Hospital, Anandapur, Kolkata", "Belle Vue Clinic, Kolkata", "IPGMER and SSKM Hospital, Kolkata", "Calcutta Medical Research Institute (CMRI), Kolkata", "Medica Super Speciality Hospital, Kolkata", "Ruby General Hospital, Kolkata", "Peerless Hospital, Kolkata", "Tata Medical Center, Kolkata", "Saroj Gupta Cancer Centre and Research Institute, Kolkata", "Institute of Neurosciences Kolkata (INK)", "B.R. Singh Hospital, Kolkata", "Nil Ratan Sircar Medical College and Hospital (NRS), Kolkata", "Narayana Multispeciality Hospital, Howrah", "BM Birla Heart Research Centre, Kolkata", "Desun Hospital, Kolkata", "Woodlands Multispeciality Hospital, Kolkata", "Vivekananda Institute of Medical Sciences, Kolkata"
+    "AMRI Hospital, Salt Lake, Kolkata",
+    "Apollo Gleneagles Hospital, Kolkata",
+    "B.R. Singh Hospital, Kolkata",
+    "Bijoygarh State General Hospital",
+    "BM Birla Hospital, Kolkata",
+    "Bidhannagar Sub Divisional Hospital",
+    "Desun Hospital, Kolkata",
+    "Fortis Hospital, Kolkata",
+    "Kothari Medical Centre",
+    "KPC Hospital, Jadavpur",
+    "Medica Superspecialty Hospital, Kolkata",
+    "Medical College, Kolkata",
+    "Narayana Multispeciality Hospital, Howrah",
+    "Nil Ratan Sircar Medical College and Hospital (NRS), Kolkata",
+    "North Dum Dum Municipality Hospital",
+    "Peerless Hospital, Kolkata",
+    "R G Kar Hospital, Kolkata",
+    "Ruby General Hospital, Kolkata",
+    "Sagore Dutta Hospital",
+    "Saroj Gupta Cancer Centre and Research Institute, Kolkata",
+    "South Dum Dum Municipal Hospital",
+    "S.S.K.M Hospital, Kolkata",
+    "Woodlands Multispeciality Hospital, Kolkata"
+
   ];
 
   const geocode = async (query) => {
