@@ -57,7 +57,7 @@ const HomePage = () => {
           </a>
 
           <div
-            onClick={() => window.open("https://prescription-analysis-mizb3ivqzwznmadiyu8xh7.streamlit.app/", "_blank")}
+            onClick={() => window.open("https://mxzcscvsseuvucvdy2zkxi.streamlit.app/", "_blank")}
             className="flex items-center justify-center px-4 py-2 !bg-green-500 text-white font-medium rounded-lg shadow hover:!bg-green-600 transition cursor-pointer h-full"
           >
             Open Prescription Reader

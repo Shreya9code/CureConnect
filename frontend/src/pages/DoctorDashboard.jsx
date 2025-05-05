@@ -83,7 +83,7 @@ export default function DoctorDashboard() {
   </h2>
 
   {appointments.length > 0 ? (
-    <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-2">
+    <div className="flex flex-col gap-4 ">{/*max-h-[400px] overflow-y-auto pr-2*/}
       {appointments.map((appt) => (
         <div
           key={appt._id}

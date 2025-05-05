@@ -89,7 +89,7 @@ st.markdown('<h1 class="title">🩺 AI-Powered Prescription Reader</h1>', unsafe
 # Introduction Section
 st.markdown("""
     <div class="instructions">
-        <h2 class="subheading">🏥 Welcome to **CureConnect**!</h2>
+        <h2 class="subheading">🏥 Welcome to CureConnect!</h2>
         <p>Use our AI-powered tool to analyze and understand your medical prescriptions.</p>
     </div>
 """, unsafe_allow_html=True)
