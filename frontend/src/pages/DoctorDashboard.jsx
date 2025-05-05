@@ -73,7 +73,7 @@ export default function DoctorDashboard() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-8">
+    <div className="min-h-screen !bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 p-8">
       {/* Header */}
       {/* Appointments */}
 <div className="bg-white/80 backdrop-blur-lg border border-blue-200 p-6 rounded-3xl shadow-xl transition-all hover:scale-[1.01]">
@@ -87,7 +87,7 @@ export default function DoctorDashboard() {
       {appointments.map((appt) => (
         <div
           key={appt._id}
-          className="bg-gray-100 hover:bg-gray-200 transition-all rounded-lg p-4 mb-4 shadow-sm flex flex-col gap-2"
+          className="!bg-gray-100 hover:!bg-gray-200 transition-all rounded-lg p-4 mb-4 shadow-sm flex flex-col gap-2"
         >
           <div className="flex items-center gap-4">
             <img
@@ -115,7 +115,7 @@ export default function DoctorDashboard() {
           {!appt.cancelled ? (
             <button
               onClick={() => cancelAppointment(appt.docId, appt._id)}
-              className="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm self-end"
+              className="mt-3 !bg-red-500 hover:!bg-red-600 text-white px-3 py-1 rounded text-sm self-end"
             >
               Cancel Appointment
             </button>
