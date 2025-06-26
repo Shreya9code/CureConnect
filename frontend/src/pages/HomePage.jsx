@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaUserMd, FaCalendarAlt, FaClinicMedical, FaChartLine, FaPhoneAlt } from 'react-icons/fa';
-import { GiHealthNormal } from 'react-icons/gi';
 
 const HomePage = () => {
   return (
@@ -69,6 +68,13 @@ const HomePage = () => {
           >
             Medicine Reminder
           </Link>
+        </div>
+      </section>
+
+      {/* Sign Up Prompt Banner */}
+      <section className="container mx-auto px-6">
+        <div className="bg-yellow-100 text-yellow-800 px-6 py-4 rounded-lg shadow-md text-center text-sm md:text-base font-medium mb-6">
+          🚨 Please sign up to unlock and use more features like appointment booking and ambulance booking.
         </div>
       </section>
 
